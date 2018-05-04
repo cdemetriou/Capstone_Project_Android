@@ -12,10 +12,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.udacity.capstone.R;
 import com.udacity.capstone.data.model.Item;
+import com.udacity.capstone.data.model.ItemList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,8 @@ import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
-    private List<Item> list;
+    private ItemList list;
+    private List<Item> mylist;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -36,8 +39,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         void onAddClick(Item item);
     }
 
-    public ItemAdapter(OnItemClickListener listener) {
-        list = new ArrayList<>();
+    public ItemAdapter(OnItemClickListener listener, ItemList list) {
+        if (list != null) {
+            this.list = list;
+            this.mylist = list.getList();
+        }
+        else {
+            this.mylist = new ArrayList<>();
+        }
         this.listener = listener;
     }
 
@@ -53,33 +62,41 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Item item = list.get(position);
+        Item item = mylist.get(position);
         holder.bind(item, listener);
 
-        if (item.isCharacter) holder.button.setVisibility(View.VISIBLE);
-        else holder.button.setVisibility(View.GONE);
-        holder.name.setText(item.getName() == null ? "Name" : item.getName());
-        Glide.with(holder.image.getContext())
-                .load(item.getThumbnail() != null ? item.getThumbnail() : R.drawable.daredevil)
-                .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90)))
-                .into(holder.image);
+        if (list.isCharacter){
+            holder.button.setVisibility(View.VISIBLE);
+            holder.name.setText(item.getName() == null ? "Name" : item.getName());
+        }
+        else {
+            holder.button.setVisibility(View.GONE);
+            holder.name.setText(item.getTitle() == null ? "Title" : item.getTitle());
+        }
 
+        if (item.getThumbnail() != null){
+            String image = item.getThumbnail().getPath() + "." + item.getThumbnail().getExtension();
 
+            Glide.with(holder.image.getContext())
+                    .load(image)
+                    .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90)))
+                    .into(holder.image);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return mylist.size();
     }
 
     void setList(List<Item> newlist){
-        list = newlist;
+        mylist = newlist;
         notifyDataSetChanged();
     }
 
 
     void add(Item item){
-        list.add(item);
+        mylist.add(item);
         notifyItemChanged(getItemCount());
     }
 

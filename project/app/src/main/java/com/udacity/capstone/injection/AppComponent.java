@@ -3,6 +3,7 @@ package com.udacity.capstone.injection;
 import com.udacity.capstone.modules.auth.LoginActivity;
 import com.udacity.capstone.data.remote.MarvelService;
 import com.udacity.capstone.data.remote.Repository;
+import com.udacity.capstone.modules.main.MainViewModel;
 
 import javax.inject.Singleton;
 
@@ -20,5 +21,6 @@ public interface AppComponent {
     Repository repository();
 
     void inject(LoginActivity loginActivity);
+    void inject(MainViewModel viewModel);
 
 }

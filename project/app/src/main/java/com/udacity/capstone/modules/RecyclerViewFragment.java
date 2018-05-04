@@ -16,8 +16,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.udacity.capstone.BaseFragment;
 import com.udacity.capstone.R;
 import com.udacity.capstone.data.model.Item;
+import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.databinding.FragmentItemsBinding;
 import com.udacity.capstone.modules.detail.CharacterDetailActivity;
+
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -30,6 +36,7 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
     FragmentItemsBinding binding;
     private String title;
     private int page;
+    private ItemList list;
 
     public RecyclerViewFragment() {}
 
@@ -38,11 +45,12 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
     }
 
 
-    public static Fragment newInstance(int page, String title) {
+    public static Fragment newInstance(int page, String title, ItemList list) {
         Fragment fragmentFirst = RecyclerViewFragment.newInstance();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);
+        args.putParcelable("list", Parcels.wrap(list));
         fragmentFirst.setArguments(args);
         return fragmentFirst;
     }
@@ -53,6 +61,7 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
         if (getArguments() != null) {
             page = getArguments().getInt("someInt", 0);
             title = getArguments().getString("someTitle");
+            list = Parcels.unwrap(getArguments().getParcelable("list"));
         }
     }
 
@@ -69,10 +78,8 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
 
         binding.recyclerView.setLayoutManager(mLayoutManager);
 
-        ItemAdapter adapter = new ItemAdapter(this);
+        ItemAdapter adapter = new ItemAdapter(this, list);
         binding.recyclerView.setAdapter(adapter);
-
-        for (int i = 0; i < 6; i++) adapter.add(new Item());
 
         return binding.getRoot();
     }
@@ -80,9 +87,9 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
     @Override
     public void onItemClick(Item item) {
         Timber.e("onItemClick");
-
-        // add param to show if its character of comic to the intent
-        startActivity(new Intent(getActivity(), CharacterDetailActivity.class));
+        Intent intent = new Intent(getActivity(), CharacterDetailActivity.class);
+        intent.putExtra("item", Parcels.wrap(item));
+        startActivity(intent);
 
     }
 

@@ -24,7 +24,7 @@ public interface MarvelService {
                                           @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
 
     @GET("comics")
-    Call<Response> searchComicsByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp,
+    Call<Response> searchComicsByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @QueryMap Map<String, String> queryMap,
                                 @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
 
     @GET("series")

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class Data {
     private Integer count;
     @SerializedName("results")
     @Expose
-    private List<Item> results = null;
+    private ArrayList<Item> results = null;
 
     public Integer getOffset() {
         return offset;
@@ -62,11 +63,11 @@ public class Data {
         this.count = count;
     }
 
-    public List<Item> getResults() {
+    public ArrayList<Item> getResults() {
         return results;
     }
 
-    public void setResults(List<Item> results) {
+    public void setResults(ArrayList<Item> results) {
         this.results = results;
     }
 }

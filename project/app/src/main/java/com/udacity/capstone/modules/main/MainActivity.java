@@ -1,8 +1,10 @@
 package com.udacity.capstone.modules.main;
 
+import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -17,15 +19,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.udacity.capstone.BaseActivity;
 import com.udacity.capstone.R;
+import com.udacity.capstone.data.model.Item;
+import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.databinding.ActivityMainBinding;
 import com.udacity.capstone.modules.RecyclerViewFragment;
 
-public class MainActivity extends BaseActivity implements MainViewModel.MainView {
+import java.util.ArrayList;
+import java.util.List;
+
+import timber.log.Timber;
+
+public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
     MainViewModel viewModel;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +41,7 @@ public class MainActivity extends BaseActivity implements MainViewModel.MainView
         setupActivity();
         viewModel = new MainViewModel(this);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment charactersFragment = RecyclerViewFragment.newInstance();
-        transaction.add(R.id.frame_layout, charactersFragment);
-        transaction.commit();
-
+        viewModel.getCharacterList().observe(this, myObserver);
     }
 
     private void setupActivity() {
@@ -58,22 +62,13 @@ public class MainActivity extends BaseActivity implements MainViewModel.MainView
         binding.appBarMain.searchView.setOnSearchViewListener(SearchViewListener);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    final Observer<ItemList> myObserver = new Observer<ItemList>() {
+        @Override
+        public void onChanged(@Nullable final ItemList list) {
+            Timber.e("resutls");
+            displayItems(list);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        binding.appBarMain.searchView.setMenuItem(item);
-        return true;
-    }
+    };
 
     private final NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -82,13 +77,17 @@ public class MainActivity extends BaseActivity implements MainViewModel.MainView
             int id = item.getItemId();
             switch (id){
                 case  R.id.nav_characters:
+                    viewModel.getCharacterList().observe(MainActivity.this, myObserver);
+
                     break;
                 case R.id.nav_comics:
+                    viewModel.getComicsList().observe(MainActivity.this, myObserver);
                     break;
             }
 
             binding.drawerLayout.closeDrawer(GravityCompat.START);
-            return true;        }
+            return true;
+        }
     };
 
     private final MaterialSearchView.OnQueryTextListener QueryTextListener = new MaterialSearchView.OnQueryTextListener() {
@@ -117,8 +116,29 @@ public class MainActivity extends BaseActivity implements MainViewModel.MainView
         }
     };
 
-    @Override
-    public void displayItems(){
 
+    public void displayItems(ItemList list){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment charactersFragment = RecyclerViewFragment.newInstance(0, null, list);
+        transaction.replace(R.id.frame_layout, charactersFragment);
+        transaction.commit();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        binding.appBarMain.searchView.setMenuItem(item);
+        return true;
     }
 }

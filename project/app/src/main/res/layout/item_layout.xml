@@ -23,28 +23,34 @@
 
                <ImageView
                    android:id="@+id/image"
+                   android:adjustViewBounds="true"
+                   android:scaleType="fitCenter"
                    android:layout_width="match_parent"
                    android:layout_height="match_parent" />
 
                <TextView
                    android:id="@+id/name"
                    android:layout_width="match_parent"
-                   android:layout_height="60dp"
+                   android:layout_height="70dp"
                    android:layout_gravity="bottom"
                    android:background="@drawable/item_tilte_background"
                    tools:text="Iron Man"
+                   android:maxLines="2"
                    android:gravity="center_vertical"
-                   android:paddingStart="20dp"
+                   android:paddingStart="16dp"
+                   android:paddingEnd="16dp"
                    android:textColor="@color/md_white_1000"
-                   android:textSize="28sp"/>
+                   android:textSize="24sp"/>
 
                <android.support.design.widget.FloatingActionButton
                    android:id="@+id/button"
-                   android:layout_width="50dp"
-                   android:layout_height="50dp"
-                   android:layout_gravity="bottom|end"
-                   android:layout_marginBottom="20dp"
-                   android:layout_marginEnd="20dp"/>
+                   android:layout_width="56dp"
+                   android:layout_height="56dp"
+                   android:src="@android:drawable/ic_input_add"
+                   android:tint="@color/colorPrimaryDark"
+                   android:layout_gravity="top|end"
+                   android:layout_marginTop="8dp"
+                   android:layout_marginEnd="8dp"/>
 
 
 

@@ -9,8 +9,11 @@ import android.view.MenuItem;
 
 import com.udacity.capstone.BaseActivity;
 import com.udacity.capstone.R;
+import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.databinding.ActivityCharacterDetailBinding;
 import com.udacity.capstone.modules.RecyclerViewFragment;
+
+import org.parceler.Parcels;
 
 /**
  * Created by christosdemetriou on 04/05/2018.
@@ -19,6 +22,7 @@ import com.udacity.capstone.modules.RecyclerViewFragment;
 public class CharacterDetailActivity extends BaseActivity {
 
     ActivityCharacterDetailBinding binding;
+    public static Item item;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,9 +31,9 @@ public class CharacterDetailActivity extends BaseActivity {
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         getSupportActionBar().setTitle("Character");
+
+        item = Parcels.unwrap(getIntent().getExtras().getParcelable("item"));
 
         FragmentPagerAdapter adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         binding.vpPager.setAdapter(adapterViewPager);
@@ -65,9 +69,9 @@ public class CharacterDetailActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
-                    return DetailFragment.newInstance(0, "Page # 1");
+                    return DetailFragment.newInstance(item);
                 case 1: // Fragment # 0 - This will show FirstFragment different title
-                    return RecyclerViewFragment.newInstance(1, "Page # 2");
+                    return RecyclerViewFragment.newInstance(1, "Page # 2", null);
                 default:
                     return null;
             }

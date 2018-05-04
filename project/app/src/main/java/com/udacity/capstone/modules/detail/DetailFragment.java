@@ -12,7 +12,10 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.udacity.capstone.BaseFragment;
 import com.udacity.capstone.R;
+import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.databinding.FragmentItemDetailsBinding;
+
+import org.parceler.Parcels;
 
 /**
  * Created by christosdemetriou on 04/05/2018.
@@ -24,6 +27,7 @@ public class DetailFragment extends BaseFragment {
     FragmentItemDetailsBinding binding;
     private String title;
     private int page;
+    private Item item;
 
     public DetailFragment() {
     }
@@ -33,11 +37,10 @@ public class DetailFragment extends BaseFragment {
     }
 
 
-    public static Fragment newInstance(int page, String title) {
+    public static Fragment newInstance(Item item) {
         Fragment fragmentFirst = DetailFragment.newInstance();
         Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
+        args.putParcelable("item", Parcels.wrap(item));
         fragmentFirst.setArguments(args);
         return fragmentFirst;
     }
@@ -47,8 +50,7 @@ public class DetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            page = getArguments().getInt("someInt", 0);
-            title = getArguments().getString("someTitle");
+            item = Parcels.unwrap(getArguments().getParcelable("item"));
         }
     }
 
@@ -56,10 +58,18 @@ public class DetailFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_item_details, container, false);
 
-        Glide.with(this)
-                .load(R.drawable.margeto)
-                .apply(new RequestOptions().transforms(new CenterCrop()))
-                .into(binding.image);
+        if (item.getThumbnail() != null) {
+            String image = item.getThumbnail().getPath() + "." + item.getThumbnail().getExtension();
+
+            Glide.with(this)
+                    .load(image)
+                    .apply(new RequestOptions().transforms(new CenterCrop()))
+                    .into(binding.image);
+
+            binding.title.setText(item.getName() != null ? item.getName() : item.getTitle());
+            binding.description.setText(item.getDescription() != null ? item.getDescription() : item.getVariantDescription());
+        }
+
 
 
         return binding.getRoot();

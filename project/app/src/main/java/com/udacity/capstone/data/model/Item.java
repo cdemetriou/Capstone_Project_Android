@@ -20,9 +20,15 @@ public class Item {
     @SerializedName("name")
     @Expose
     String name;
+    @SerializedName("title")
+    @Expose
+    String title;
     @SerializedName("description")
     @Expose
     String description;
+    @SerializedName("variantDescription")
+    @Expose
+    String variantDescription;
     @SerializedName("modified")
     @Expose
     String modified;
@@ -35,11 +41,6 @@ public class Item {
     @SerializedName("urls")
     @Expose
     List<Url> urls = null;
-
-    public boolean isCharacter = false;
-    public boolean isComic = false;
-    public boolean isSeries = false;
-    public boolean isStory = false;
 
 
     public Integer getId() {
@@ -58,12 +59,28 @@ public class Item {
         this.name = name;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getVariantDescription() {
+        return variantDescription;
+    }
+
+    public void setVariantDescription(String variantDescription) {
+        this.variantDescription = variantDescription;
     }
 
     public String getModified() {
@@ -84,7 +101,7 @@ public class Item {
 
 
     @Parcel
-    static class Thumbnail {
+    public static class Thumbnail {
 
         @SerializedName("path")
         @Expose
@@ -131,7 +148,7 @@ public class Item {
 
 
     @Parcel
-    static class Url {
+    public static class Url {
 
         @SerializedName("type")
         @Expose
