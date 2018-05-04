@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="Search">
+        <menu>
+            <item
+                android:id="@+id/nav_characters"
+                android:icon="@drawable/character"
+                android:iconTint="@color/md_black_1000"
+                android:title="Characters" />
+            <item
+                android:id="@+id/nav_comics"
+                android:icon="@drawable/comic"
+                android:title="Comics" />
+        </menu>
+    </item>
+
+</menu>

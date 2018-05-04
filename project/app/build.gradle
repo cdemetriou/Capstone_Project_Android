@@ -29,10 +29,16 @@ android {
         }
 
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -41,6 +47,8 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:support-annotations:$support_version"
     implementation "com.android.support:design:$support_version"
+    implementation "com.android.support:palette-v7:$support_version"
+
 
     implementation 'com.google.dagger:dagger:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
@@ -53,9 +61,11 @@ dependencies {
 
     implementation 'org.parceler:parceler-api:1.1.10'
     annotationProcessor 'org.parceler:parceler:1.1.10'
+    implementation 'com.google.code.gson:gson:2.8.2'
+
 
     implementation 'frankiesardo:icepick:3.2.0'
-    compileOnly 'frankiesardo:icepick-processor:3.2.0'
+    annotationProcessor 'frankiesardo:icepick-processor:3.2.0'
 
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
@@ -63,8 +73,8 @@ dependencies {
     implementation("com.mikepenz:materialdrawer:6.0.7@aar") {
         transitive = true
     }
-
-
-
-
 }
+
+
+
+apply plugin: 'com.google.gms.google-services'
