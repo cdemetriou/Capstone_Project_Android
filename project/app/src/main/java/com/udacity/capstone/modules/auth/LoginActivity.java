@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.udacity.capstone.BaseActivity;
 import com.udacity.capstone.CapstoneApplication;
-import com.udacity.capstone.modules.MainActivity;
+import com.udacity.capstone.modules.main.MainActivity;
 import com.udacity.capstone.R;
 import com.udacity.capstone.data.remote.Repository;
 

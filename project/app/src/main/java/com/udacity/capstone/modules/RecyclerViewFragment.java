@@ -1,11 +1,10 @@
 package com.udacity.capstone.modules;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,12 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.udacity.capstone.BaseFragment;
 import com.udacity.capstone.R;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.databinding.FragmentItemsBinding;
-import com.udacity.capstone.databinding.ItemLayoutBinding;
+import com.udacity.capstone.modules.detail.CharacterDetailActivity;
 
 import timber.log.Timber;
 
@@ -27,18 +25,36 @@ import timber.log.Timber;
  * Created by christosdemetriou on 27/04/2018.
  */
 
-public class CharactersFragment extends BaseFragment implements ItemAdapter.OnItemClickListener {
+public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.OnItemClickListener {
 
     FragmentItemsBinding binding;
+    private String title;
+    private int page;
 
-    public CharactersFragment() {}
+    public RecyclerViewFragment() {}
 
     public static Fragment newInstance() {
-        return new CharactersFragment();
+        return new RecyclerViewFragment();
     }
 
+
+    public static Fragment newInstance(int page, String title) {
+        Fragment fragmentFirst = RecyclerViewFragment.newInstance();
+        Bundle args = new Bundle();
+        args.putInt("someInt", page);
+        args.putString("someTitle", title);
+        fragmentFirst.setArguments(args);
+        return fragmentFirst;
+    }
     @Override
-    public void onCreate(Bundle savedInstanceState) {super.onCreate(savedInstanceState);}
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            page = getArguments().getInt("someInt", 0);
+            title = getArguments().getString("someTitle");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,11 +80,10 @@ public class CharactersFragment extends BaseFragment implements ItemAdapter.OnIt
     @Override
     public void onItemClick(Item item) {
         Timber.e("onItemClick");
-        /*FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right);
-        ListingFragment listingFragment = ListingFragment.newInstance();
-        transaction.addToBackStack(null);
-        transaction.add(R.id.frame_layout, listingFragment).commit();*/
+
+        // add param to show if its character of comic to the intent
+        startActivity(new Intent(getActivity(), CharacterDetailActivity.class));
+
     }
 
     @Override

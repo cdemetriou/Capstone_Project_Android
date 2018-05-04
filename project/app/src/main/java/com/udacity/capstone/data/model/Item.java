@@ -36,6 +36,10 @@ public class Item {
     @Expose
     List<Url> urls = null;
 
+    public boolean isCharacter = false;
+    public boolean isComic = false;
+    public boolean isSeries = false;
+    public boolean isStory = false;
 
 
     public Integer getId() {

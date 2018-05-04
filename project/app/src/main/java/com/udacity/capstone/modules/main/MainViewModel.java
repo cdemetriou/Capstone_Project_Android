@@ -1,4 +1,4 @@
-package com.udacity.capstone.modules;
+package com.udacity.capstone.modules.main;
 
 import com.udacity.capstone.data.model.Item;
 

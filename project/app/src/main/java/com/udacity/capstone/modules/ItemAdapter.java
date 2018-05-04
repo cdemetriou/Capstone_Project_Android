@@ -56,6 +56,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         Item item = list.get(position);
         holder.bind(item, listener);
 
+        if (item.isCharacter) holder.button.setVisibility(View.VISIBLE);
+        else holder.button.setVisibility(View.GONE);
         holder.name.setText(item.getName() == null ? "Name" : item.getName());
         Glide.with(holder.image.getContext())
                 .load(item.getThumbnail() != null ? item.getThumbnail() : R.drawable.daredevil)
