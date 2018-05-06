@@ -28,41 +28,41 @@ public interface MarvelService {
                                 @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
 
     @GET("series")
-    Call<Response> searchSeriesByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp,
+    Call<Response> searchSeriesByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @QueryMap Map<String, String> queryMap,
                                 @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
 
     @GET("stories")
-    Call<Response> searchEventsByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp,
+    Call<Response> searchEventsByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @QueryMap Map<String, String> queryMap,
                                 @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
 
     @GET("characters/{characterId}")
-    Call<Response> getCharacterById(@Path("characterId") Integer characterId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getCharacterById(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
     @GET("characters/{characterId}/comics")
-    Call<Response> getCharacterComicsById(@Path("characterId") Integer characterId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getComicsByCharacterId(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
     @GET("characters/{characterId}/series")
-    Call<Response> getCharacterSeriesById(@Path("characterId") Integer characterId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getCharacterSeriesById(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
     @GET("characters/{characterId}/events")
-    Call<Response> getCharacterEventsById(@Path("characterId") Integer characterId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getCharacterEventsById(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
     @GET("comics/{comicId}")
-    Call<Response> getComicById(@Path("comicId") Integer comicId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getComicById(@Path("comicId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
     @GET("series/{seriesId}")
-    Call<Response> getSeriesById(@Path("seriesId") Integer comicId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getSeriesById(@Path("seriesId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
     @GET("events/{eventId}")
-    Call<Response> getEventById(@Path("eventId") Integer comicId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getEventById(@Path("eventId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
     @GET("comics/{comicId}/characters")
-    Call<Response> getComicCharactersById(@Path("comicId") Integer comicId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getCharactersByComicId(@Path("comicId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
     @GET("series/{seriesId}/characters")
-    Call<Response> getSeriesCharactersById(@Path("seriesId") Integer comicId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getSeriesCharactersById(@Path("seriesId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
     @GET("events/{eventId}/characters")
-    Call<Response> getEventCharactersById(@Path("eventId") Integer comicId, @Query("apikey") String publicKey, @Query("hash") String md5Digest, @Query("ts") long timestamp);
+    Call<Response> getEventCharactersById(@Path("eventId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
 }

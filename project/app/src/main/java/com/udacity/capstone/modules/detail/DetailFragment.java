@@ -17,6 +17,8 @@ import com.udacity.capstone.databinding.FragmentItemDetailsBinding;
 
 import org.parceler.Parcels;
 
+import static com.udacity.capstone.data.model.ItemList.Type.isCharacter;
+
 /**
  * Created by christosdemetriou on 04/05/2018.
  */
@@ -27,7 +29,8 @@ public class DetailFragment extends BaseFragment {
     FragmentItemDetailsBinding binding;
     private String title;
     private int page;
-    private Item item;
+    private Item item = new Item();
+    private int type;
 
     public DetailFragment() {
     }
@@ -37,10 +40,11 @@ public class DetailFragment extends BaseFragment {
     }
 
 
-    public static Fragment newInstance(Item item) {
+    public static Fragment newInstance(Item item, int type) {
         Fragment fragmentFirst = DetailFragment.newInstance();
         Bundle args = new Bundle();
         args.putParcelable("item", Parcels.wrap(item));
+        args.putInt("type", type);
         fragmentFirst.setArguments(args);
         return fragmentFirst;
     }
@@ -51,12 +55,15 @@ public class DetailFragment extends BaseFragment {
 
         if (getArguments() != null) {
             item = Parcels.unwrap(getArguments().getParcelable("item"));
+            type = getArguments().getInt("type");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_item_details, container, false);
+
+        if (type != isCharacter) binding.button.setVisibility(View.GONE);
 
         if (item.getThumbnail() != null) {
             String image = item.getThumbnail().getPath() + "." + item.getThumbnail().getExtension();

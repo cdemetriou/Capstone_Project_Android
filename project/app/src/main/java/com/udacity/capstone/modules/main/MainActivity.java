@@ -33,6 +33,8 @@ public class MainActivity extends BaseActivity {
 
     ActivityMainBinding binding;
     MainViewModel viewModel;
+    ItemList characters;
+    ItemList comics;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MainActivity extends BaseActivity {
         viewModel = new MainViewModel(this);
 
         viewModel.getCharacterList().observe(this, myObserver);
+        viewModel.getComicsList().observe(this, myObserver);
     }
 
     private void setupActivity() {
@@ -62,11 +65,17 @@ public class MainActivity extends BaseActivity {
         binding.appBarMain.searchView.setOnSearchViewListener(SearchViewListener);
     }
 
+
     final Observer<ItemList> myObserver = new Observer<ItemList>() {
         @Override
         public void onChanged(@Nullable final ItemList list) {
             Timber.e("resutls");
-            displayItems(list);
+            if (list.isCharacter) {
+                characters = list;
+                displayItems(characters);
+            }
+            else comics = list;
+
         }
     };
 
@@ -77,11 +86,10 @@ public class MainActivity extends BaseActivity {
             int id = item.getItemId();
             switch (id){
                 case  R.id.nav_characters:
-                    viewModel.getCharacterList().observe(MainActivity.this, myObserver);
-
+                    displayItems(characters);
                     break;
                 case R.id.nav_comics:
-                    viewModel.getComicsList().observe(MainActivity.this, myObserver);
+                    displayItems(comics);
                     break;
             }
 

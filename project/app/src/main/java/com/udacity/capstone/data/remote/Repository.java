@@ -54,8 +54,6 @@ public class Repository {
         return data;
     }
 
-
-
     public MutableLiveData<ItemList> getComics(String startsWith, int offset, int limit){
         final MutableLiveData<ItemList> data = new MutableLiveData<>();
 
@@ -65,6 +63,48 @@ public class Repository {
             public void onSuccess(Response response) {
                 List<Item> characters = response.getData().getResults();
                 ItemList list = new ItemList(characters, ItemList.Type.isComic);
+
+                data.setValue(list);
+            }
+
+            @Override
+            public void onFailed(Throwable throwable) {
+
+            }
+        });
+        return data;
+    }
+
+    public MutableLiveData<ItemList> getComicsByCharacterId(int characterId){
+        final MutableLiveData<ItemList> data = new MutableLiveData<>();
+
+        dataService.getComicsByCharacterId(characterId, Utils.getQueryMap()).enqueue(new ErrorHandlingCallback<Response>() {
+
+            @Override
+            public void onSuccess(Response response) {
+                List<Item> comics = response.getData().getResults();
+                ItemList list = new ItemList(comics, ItemList.Type.isComic);
+
+                data.setValue(list);
+            }
+
+            @Override
+            public void onFailed(Throwable throwable) {
+
+            }
+        });
+        return data;
+    }
+
+    public MutableLiveData<ItemList> getCharactersByComicId(int comicId){
+        final MutableLiveData<ItemList> data = new MutableLiveData<>();
+
+        dataService.getCharactersByComicId(comicId, Utils.getQueryMap()).enqueue(new ErrorHandlingCallback<Response>() {
+
+            @Override
+            public void onSuccess(Response response) {
+                List<Item> characters = response.getData().getResults();
+                ItemList list = new ItemList(characters, ItemList.Type.isCharacter);
 
                 data.setValue(list);
             }

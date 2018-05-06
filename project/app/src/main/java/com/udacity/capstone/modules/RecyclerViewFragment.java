@@ -18,12 +18,9 @@ import com.udacity.capstone.R;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.databinding.FragmentItemsBinding;
-import com.udacity.capstone.modules.detail.CharacterDetailActivity;
+import com.udacity.capstone.modules.detail.DetailActivity;
 
 import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -54,6 +51,7 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
         fragmentFirst.setArguments(args);
         return fragmentFirst;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +75,12 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 1);
 
         binding.recyclerView.setLayoutManager(mLayoutManager);
+        if (list == null) binding.progressBar.setVisibility(View.VISIBLE);
+        else binding.progressBar.setVisibility(View.GONE);
 
         ItemAdapter adapter = new ItemAdapter(this, list);
+
+
         binding.recyclerView.setAdapter(adapter);
 
         return binding.getRoot();
@@ -86,9 +88,16 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
 
     @Override
     public void onItemClick(Item item) {
-        Timber.e("onItemClick");
-        Intent intent = new Intent(getActivity(), CharacterDetailActivity.class);
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
         intent.putExtra("item", Parcels.wrap(item));
+        if (list.isCharacter) {
+            intent.putExtra("type", ItemList.Type.isCharacter);
+            Timber.e("character click");
+        }
+        else if (list.isComic) {
+            intent.putExtra("type", ItemList.Type.isComic);
+            Timber.e("comic click");
+        }
         startActivity(intent);
 
     }

@@ -12,6 +12,10 @@
     tools:context="com.udacity.capstone.modules.main.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <include layout="@layout/fragment_loading" />
+
+
+
 </FrameLayout>
 
 </layout>
