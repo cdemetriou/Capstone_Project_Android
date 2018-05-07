@@ -4,12 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.udacity.capstone.CapstoneApplication;
-import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.data.remote.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,43 +17,35 @@ public class MainViewModel {
 
     @Inject
     Repository repository;
-    private MutableLiveData<ItemList> characterList;
-    private MutableLiveData<ItemList> comicsList;
+    
+    MutableLiveData<ItemList> characterList;
+    MutableLiveData<ItemList> comicsList;
 
-    public static class Type {
-        public final static int CHARS = 0;
-        public final static int COMICS = 1;
-    }
+    //private MutableLiveData<ItemList> searchList;
 
-    int currentType = Type.CHARS;
 
 
 
     public MainViewModel(Context context) {
         CapstoneApplication.getApplicationComponent(context).inject(this);
 
-        getChars();
-        getComs();
+        getDefaultCharacters();
+        getDefaultComics();
     }
 
-    public void getChars(){
-        characterList = repository.getCharacters("Iron", 0, 10);
+    public void getDefaultCharacters(){
+        characterList = repository.getDefaultCharacters(0, 10);
     }
-    public void getComs(){
-        comicsList = repository.getComics("Iron", 0, 10);
+    public void getDefaultComics(){
+        comicsList = repository.getDefaultComics(0, 10);
     }
 
-    public void search(int type) {
-        currentType = type;
+    public void searchCharacters(String nameStartWith){
+        characterList = repository.searchCharactersByName(nameStartWith, 0, 10);
+    }
 
-        switch (type){
-            case Type.CHARS:
-                // show chars
-                break;
-            case Type.COMICS:
-                // search
-                break;
-        }
+    public void searchComics(String titleStartsWith) {
+        comicsList = repository.searchComicsByName(titleStartsWith,0,10);
     }
 
 
@@ -74,4 +62,5 @@ public class MainViewModel {
         }
         return comicsList;
     }
+
 }

@@ -1,16 +1,13 @@
 package com.udacity.capstone.data.remote;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
-import com.udacity.capstone.data.Constants;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.data.model.Response;
 import com.udacity.capstone.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,10 +30,10 @@ public class Repository {
         this.dataService = dataService;
     }
 
-    public MutableLiveData<ItemList> getCharacters(String startsWith, int offset, int limit){
+    public MutableLiveData<ItemList> getDefaultCharacters(int offset, int limit){
         final MutableLiveData<ItemList> data = new MutableLiveData<>();
 
-        dataService.searchCharactersByName(startsWith, Utils.getQueryMap(), offset, limit).enqueue(new ErrorHandlingCallback<Response>() {
+        dataService.getDefaultCharacters("-modified", Utils.getQueryMap(), offset, limit).enqueue(new ErrorHandlingCallback<Response>() {
 
             @Override
             public void onSuccess(Response response) {
@@ -54,10 +51,10 @@ public class Repository {
         return data;
     }
 
-    public MutableLiveData<ItemList> getComics(String startsWith, int offset, int limit){
+    public MutableLiveData<ItemList> getDefaultComics(int offset, int limit){
         final MutableLiveData<ItemList> data = new MutableLiveData<>();
 
-        dataService.searchComicsByTitle(startsWith, Utils.getQueryMap(), offset, limit).enqueue(new ErrorHandlingCallback<Response>() {
+        dataService.getDefaultComics("-modified", Utils.getQueryMap(), offset, limit).enqueue(new ErrorHandlingCallback<Response>() {
 
             @Override
             public void onSuccess(Response response) {
@@ -116,5 +113,48 @@ public class Repository {
         });
         return data;
     }
+
+    public MutableLiveData<ItemList> searchCharactersByName(String nameStartsWith, int offset, int limit){
+        final MutableLiveData<ItemList> data = new MutableLiveData<>();
+
+        dataService.searchCharactersByName(nameStartsWith, Utils.getQueryMap(), offset, limit).enqueue(new ErrorHandlingCallback<Response>() {
+
+            @Override
+            public void onSuccess(Response response) {
+                List<Item> characters = response.getData().getResults();
+                ItemList list = new ItemList(characters, ItemList.Type.isCharacter);
+
+                data.setValue(list);
+            }
+
+            @Override
+            public void onFailed(Throwable throwable) {
+
+            }
+        });
+        return data;
+    }
+
+    public MutableLiveData<ItemList> searchComicsByName(String titleStartsWith, int offset, int limit){
+        final MutableLiveData<ItemList> data = new MutableLiveData<>();
+
+        dataService.searchComicsByName(titleStartsWith, Utils.getQueryMap(), offset, limit).enqueue(new ErrorHandlingCallback<Response>() {
+
+            @Override
+            public void onSuccess(Response response) {
+                List<Item> characters = response.getData().getResults();
+                ItemList list = new ItemList(characters, ItemList.Type.isComic);
+
+                data.setValue(list);
+            }
+
+            @Override
+            public void onFailed(Throwable throwable) {
+
+            }
+        });
+        return data;
+    }
+
 
 }

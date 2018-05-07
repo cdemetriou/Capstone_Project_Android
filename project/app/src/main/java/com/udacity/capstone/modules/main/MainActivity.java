@@ -1,6 +1,7 @@
 package com.udacity.capstone.modules.main;
 
 import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,15 +29,22 @@ import com.udacity.capstone.modules.RecyclerViewFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.State;
 import timber.log.Timber;
 
 public class MainActivity extends BaseActivity {
+
+    @State
+    int navigationOption = R.id.nav_characters;
 
     ActivityMainBinding binding;
     MainViewModel viewModel;
     ItemList characters;
     ItemList comics;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    String searchTerm;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +64,8 @@ public class MainActivity extends BaseActivity {
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+
+
         TextView nameView = binding.navView.getHeaderView(0).findViewById(R.id.name);
         TextView emailView = binding.navView.getHeaderView(0).findViewById(R.id.email);
         nameView.setText(user != null ? user.getDisplayName() : null);
@@ -69,21 +80,33 @@ public class MainActivity extends BaseActivity {
     final Observer<ItemList> myObserver = new Observer<ItemList>() {
         @Override
         public void onChanged(@Nullable final ItemList list) {
-            Timber.e("resutls");
-            if (list.isCharacter) {
-                characters = list;
-                displayItems(characters);
+            if (searchTerm != null) {
+                displayItems(list);
+                return;
             }
+            if (list.isCharacter) characters = list;
             else comics = list;
 
+            if (navigationOption != -1) {
+                switch (navigationOption) {
+                    case R.id.nav_characters:
+                        displayItems(characters);
+                        break;
+                    case R.id.nav_comics:
+                        displayItems(comics);
+                        break;
+                }
+            }
+            else displayItems(characters);
         }
     };
 
     private final NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            // Handle navigation view item clicks here.
+
             int id = item.getItemId();
+
             switch (id){
                 case  R.id.nav_characters:
                     displayItems(characters);
@@ -93,21 +116,48 @@ public class MainActivity extends BaseActivity {
                     break;
             }
 
+            navigationOption = id;
             binding.drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
     };
 
     private final MaterialSearchView.OnQueryTextListener QueryTextListener = new MaterialSearchView.OnQueryTextListener() {
+        private int count = 0;
         @Override
         public boolean onQueryTextSubmit(String query) {
-            //Do some magic
-            return false;
+            switch (navigationOption){
+                case  R.id.nav_characters:
+                    //Do some magic
+                    searchTerm = query;
+                    viewModel.getCharacterList().observe(MainActivity.this, myObserver);
+                    displayItems(null);
+                    viewModel.searchCharacters(query);
+                    break;
+
+                case R.id.nav_comics:
+                    //Do some magic
+                    searchTerm = query;
+                    viewModel.getComicsList().observe(MainActivity.this, myObserver);
+                    displayItems(null);
+                    viewModel.searchComics(query);
+                    break;
+            }
+
+            if (count < 1) {
+                count++;
+                this.onQueryTextSubmit(query);
+                return true;
+            }
+            count = 0;
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(binding.getRoot().getWindowToken(), 0);
+
+            return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            //Do some magic
             return false;
         }
     };
@@ -115,12 +165,11 @@ public class MainActivity extends BaseActivity {
     private final MaterialSearchView.SearchViewListener SearchViewListener = new MaterialSearchView.SearchViewListener() {
         @Override
         public void onSearchViewShown() {
-            //Do some magic
         }
 
         @Override
         public void onSearchViewClosed() {
-            //Do some magic
+            searchTerm = null;
         }
     };
 
@@ -131,7 +180,6 @@ public class MainActivity extends BaseActivity {
         transaction.replace(R.id.frame_layout, charactersFragment);
         transaction.commit();
     }
-
 
     @Override
     public void onBackPressed() {
@@ -147,6 +195,8 @@ public class MainActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         binding.appBarMain.searchView.setMenuItem(item);
+
+
         return true;
     }
 }
