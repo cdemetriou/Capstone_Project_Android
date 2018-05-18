@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1008017775321-2ccbvf9uua8fc85mop3ihhob09099vc8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udacity.capstone",
+            "certificate_hash": "a31080a3fcc01b49ae524756c294e216f46ebc21"
+          }
+        },
+        {
           "client_id": "1008017775321-oc46q91ql645p3nanfe802ssvolbpcv1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

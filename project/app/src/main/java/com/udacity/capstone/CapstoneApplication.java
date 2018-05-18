@@ -2,36 +2,45 @@ package com.udacity.capstone;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
-import com.udacity.capstone.data.Constants;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.capstone.injection.AppComponent;
 import com.udacity.capstone.injection.AppModule;
 import com.udacity.capstone.injection.DaggerAppComponent;
 import com.udacity.capstone.injection.NetModule;
+import com.udacity.capstone.widget.WidgetManager;
 
-import timber.log.Timber;
+import javax.inject.Inject;
 
-/**
- * Created by christosdemetriou on 18/04/2018.
- */
 
+@SuppressWarnings("WeakerAccess")
 public class CapstoneApplication extends Application {
 
     private AppComponent appComponent;
-    private static Context mContext;
+
+    private static WidgetManager widgetManager;
+
+    @Inject
+    SharedPreferences sharedPreferences;
+
+    @Inject
+    FirebaseAnalytics firebaseAnalytics;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+        widgetManager = new WidgetManager(this);
+
         appComponent = DaggerAppComponent.builder()
-                // list of modules that are part of this component need to be created here too
                 .appModule(new AppModule(this))
-                .netModule(new NetModule(this, Constants.MARVEL_BASE_URL))
+                .netModule(new NetModule(this))
                 .build();
+
+        appComponent.inject(this);
+
+        firebaseAnalytics.setAnalyticsCollectionEnabled(sharedPreferences.getBoolean(getString(R.string.pref_key_analytics_enabled), true));
     }
 
     public static CapstoneApplication get(Context context) {
@@ -42,9 +51,7 @@ public class CapstoneApplication extends Application {
         return  get(context).appComponent;
     }
 
-    public static Context getContext() {
-        return mContext;
+    public static WidgetManager getWidgetManager(){
+        return widgetManager;
     }
-
-
 }

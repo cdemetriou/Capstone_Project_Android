@@ -1,46 +1,35 @@
 package com.udacity.capstone.data.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-/**
- * Created by christosdemetriou on 20/04/2018.
- */
 
+
+@SuppressWarnings({"WeakerAccess", "unused"})
 @Parcel
 public class Item {
 
-    @SerializedName("id")
-    @Expose
+
     Integer id;
-    @SerializedName("name")
-    @Expose
+
     String name;
-    @SerializedName("title")
-    @Expose
+
     String title;
-    @SerializedName("description")
-    @Expose
+
     String description;
-    @SerializedName("variantDescription")
-    @Expose
+
     String variantDescription;
-    @SerializedName("modified")
-    @Expose
+
     String modified;
-    @SerializedName("thumbnail")
-    @Expose
+
     Thumbnail thumbnail;
-    @SerializedName("resourceURI")
-    @Expose
+
     String resourceURI;
-    @SerializedName("urls")
-    @Expose
-    List<Url> urls = null;
 
 
     public Integer getId() {
@@ -71,16 +60,8 @@ public class Item {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getVariantDescription() {
         return variantDescription;
-    }
-
-    public void setVariantDescription(String variantDescription) {
-        this.variantDescription = variantDescription;
     }
 
     public String getModified() {
@@ -95,20 +76,16 @@ public class Item {
         return thumbnail;
     }
 
-    public void setThumbnail(Thumbnail thumbnail) {
-        this.thumbnail = thumbnail;
-    }
 
-
+    @SuppressWarnings("unused")
     @Parcel
     public static class Thumbnail {
 
-        @SerializedName("path")
-        @Expose
+
         String path;
-        @SerializedName("extension")
-        @Expose
+
         String extension;
+
 
         public String getPath() {
             return path;
@@ -122,58 +99,8 @@ public class Item {
             return extension;
         }
 
-        public void setExtension(String extension) {
-            this.extension = extension;
-        }
-
     }
 
-    public String getResourceURI() {
-        return resourceURI;
-    }
-
-    public void setResourceURI(String resourceURI) {
-        this.resourceURI = resourceURI;
-    }
-
-
-    public List<Url> getUrls() {
-        return urls;
-    }
-
-    public void setUrls(List<Url> urls) {
-        this.urls = urls;
-    }
-
-
-
-    @Parcel
-    public static class Url {
-
-        @SerializedName("type")
-        @Expose
-        String type;
-        @SerializedName("url")
-        @Expose
-        String url;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-    }
 
 
 
@@ -186,8 +113,40 @@ public class Item {
                 ", modified='" + modified + '\'' +
                 ", thumbnail=" + thumbnail +
                 ", resourceURI='" + resourceURI + '\'' +
-                ", urls=" + urls +
                 '}';
     }
+
+
+    public static List<Item> unique(List<Item> list) {
+
+        Set set = new TreeSet((o1, o2) -> {
+            Item r1 = (Item) o1;
+            Item r2 = (Item) o2;
+            if (r1 != null && r2 != null)
+                if (r1.id != null && r2.id != null)
+                    if (r1.id.equals(r2.id))
+                        return 0;
+            return 1;
+        });
+        set.addAll(list);
+
+        return new ArrayList<>(set);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        return id.equals(item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
 }
 

@@ -1,15 +1,16 @@
 package com.udacity.capstone.injection;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.udacity.capstone.BuildConfig;
 import com.udacity.capstone.data.remote.MarvelService;
 import com.udacity.capstone.data.remote.Repository;
+import com.udacity.capstone.firebase.FirebaseAnalyticsManager;
+import com.udacity.capstone.firebase.FirebaseDatabaseManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,23 +23,20 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by christosdemetriou on 18/04/2018.
- */
 
+
+@SuppressWarnings("CanBeFinal")
 @Module
 public class NetModule {
 
     private Context context;
     private String mBaseUrl;
 
-    public NetModule(Context context, String baseUrl) {
+    public NetModule(Context context) {
         this.context = context;
-        this.mBaseUrl = baseUrl;
+        this.mBaseUrl = com.udacity.capstone.data.Constants.MARVEL_BASE_URL;
     }
 
-
-    // Dagger will only look for methods annotated with @Provides
     @Provides
     @Singleton
     Context provideContext() {
@@ -47,8 +45,34 @@ public class NetModule {
 
     @Provides
     @Singleton
-    SharedPreferences providesSharedPreferences(Application application) {
-        return PreferenceManager.getDefaultSharedPreferences(application);
+    FirebaseAuth getFirebaseAuth() {
+        return FirebaseAuth.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    FirebaseAnalytics provideFirebaseAnalytics() {
+        return FirebaseAnalytics.getInstance(context);
+    }
+
+    @Provides
+    @Singleton
+    FirebaseAnalyticsManager provideFirebaseAnalyticsManager(FirebaseAnalytics analytics, FirebaseAuth auth) {
+        return new FirebaseAnalyticsManager(analytics, auth);
+    }
+
+    @Provides
+    @Singleton
+    FirebaseDatabase provideFirebaseDatabase() {
+        return FirebaseDatabase.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    FirebaseDatabaseManager provideFirebaseDatabaseManager(FirebaseAuth auth, FirebaseDatabase database, FirebaseAnalyticsManager analyticsManager) {
+        database.setPersistenceEnabled(true);
+        database.setLogLevel(BuildConfig.DEBUG ? Logger.Level.DEBUG : Logger.Level.NONE);
+        return new FirebaseDatabaseManager(auth, database, analyticsManager);
     }
 
     @Provides
@@ -82,14 +106,16 @@ public class NetModule {
 
     @Provides
     @Singleton
-    public MarvelService provideDataService(Retrofit retrofit) {
+    MarvelService provideDataService(Retrofit retrofit) {
         return retrofit.create(MarvelService.class);
     }
 
     @Provides
     @Singleton
-    public Repository provideRepository(MarvelService dataService) {
-        return new Repository(context, dataService);
+    Repository provideRepository(MarvelService dataService, FirebaseAnalyticsManager analyticsManager) {
+        return new Repository(dataService, analyticsManager);
     }
+
+
 
 }

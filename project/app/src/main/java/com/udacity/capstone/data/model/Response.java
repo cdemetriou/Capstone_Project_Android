@@ -1,34 +1,23 @@
 package com.udacity.capstone.data.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by christosdemetriou on 20/04/2018.
- */
 
+@SuppressWarnings("unused")
 public class Response {
 
-    @SerializedName("code")
-    @Expose
+
     private Integer code;
-    @SerializedName("status")
-    @Expose
+
     private String status;
-    @SerializedName("copyright")
-    @Expose
+
     private String copyright;
-    @SerializedName("attributionText")
-    @Expose
+
     private String attributionText;
-    @SerializedName("attributionHTML")
-    @Expose
+
     private String attributionHTML;
-    @SerializedName("etag")
-    @Expose
+
     private String etag;
-    @SerializedName("data")
-    @Expose
+
     private Data data;
 
     public Integer getCode() {

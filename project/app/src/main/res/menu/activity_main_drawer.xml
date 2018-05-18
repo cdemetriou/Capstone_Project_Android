@@ -3,18 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="Search">
+    <item
+        android:id="@+id/nav_favorites"
+        android:icon="@drawable/character"
+        android:title="@string/my_team" />
+
+    <item android:title="@string/search_by">
         <menu>
             <item
                 android:id="@+id/nav_characters"
                 android:icon="@drawable/character"
-                android:iconTint="@color/md_black_1000"
-                android:title="Characters" />
+                android:title="@string/characters" />
             <item
                 android:id="@+id/nav_comics"
                 android:icon="@drawable/comic"
-                android:title="Comics" />
+                android:title="@string/comics" />
+
+            <item
+                android:id="@+id/nav_series"
+                android:icon="@drawable/comic"
+                android:title="@string/series" />
+
+            <item
+                android:id="@+id/nav_events"
+                android:icon="@drawable/comic"
+                android:title="@string/events" />
         </menu>
     </item>
+
+
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/settings"
+        android:title="@string/settings" />
 
 </menu>

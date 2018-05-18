@@ -3,75 +3,95 @@ package com.udacity.capstone.modules.detail;
 import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.MenuItem;
 
 import com.udacity.capstone.BaseActivity;
+import com.udacity.capstone.CapstoneApplication;
 import com.udacity.capstone.R;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.databinding.ActivityCharacterDetailBinding;
-import com.udacity.capstone.modules.RecyclerViewFragment;
-import com.udacity.capstone.modules.main.MainViewModel;
+import com.udacity.capstone.modules.recyclerView.RecyclerViewFragment;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 
-import timber.log.Timber;
-
+import static com.udacity.capstone.data.Constants.DETAIL_SCREEN_NAME;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_CHARACTER;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_CHARACTERS;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_COMIC;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_COMICS;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_DETAIL;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_EVENT;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_EVENTS;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_SERIES;
+import static com.udacity.capstone.data.Constants.EXTRAS_ITEM;
+import static com.udacity.capstone.data.Constants.EXTRAS_TYPE;
 import static com.udacity.capstone.data.model.ItemList.Type.isCharacter;
 import static com.udacity.capstone.data.model.ItemList.Type.isComic;
+import static com.udacity.capstone.data.model.ItemList.Type.isEvent;
+import static com.udacity.capstone.data.model.ItemList.Type.isSeries;
 
-/**
- * Created by christosdemetriou on 04/05/2018.
- */
 
 public class DetailActivity extends BaseActivity {
 
-    ActivityCharacterDetailBinding binding;
-    MyPagerAdapter adapterViewPager;
-    private DetailViewModel viewModel;
-    public static Item item;
-    public static int type;
-    ItemList items;
+    private MyPagerAdapter adapterViewPager;
+
+    private static Item item;
+
+    private static int type;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_character_detail);
 
+        CapstoneApplication.getApplicationComponent(this).inject(this);
+
+        ActivityCharacterDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_character_detail);
 
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        item = Parcels.unwrap(getIntent().getExtras().getParcelable("item"));
-        type = getIntent().getExtras().getInt("type");
+        if (getIntent().getExtras() != null) {
+            item = Parcels.unwrap(getIntent().getExtras().getParcelable(EXTRAS_ITEM));
+            type = getIntent().getExtras().getInt(EXTRAS_TYPE);
+        }
 
+        DetailViewModel viewModel = new DetailViewModel(this, item.getId(), type);
 
-        viewModel = new DetailViewModel(this, item.getId(), type);
-
-        viewModel.getList().observe(this, myObserver);
+        viewModel.getFirstList().observe(this, firstObserver);
+        viewModel.getSecondList().observe(this, secondObserver);
+        viewModel.getThirdList().observe(this, thirdObserver);
 
         switch (type){
             case isCharacter:
-                //viewModel.getComicsList().observe(this, myObserver);
-                getSupportActionBar().setTitle("Character");
-                Timber.e("character get comics");
+                getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTER);
                 break;
             case isComic:
-                getSupportActionBar().setTitle("Comic");
-                Timber.e("comic get characters");
+                getSupportActionBar().setTitle(DETAIL_TITLE_COMIC);
+                break;
+            case isSeries:
+                getSupportActionBar().setTitle(DETAIL_TITLE_SERIES);
+                break;
+            case isEvent:
+                getSupportActionBar().setTitle(DETAIL_TITLE_EVENT);
                 break;
         }
+
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         binding.vpPager.setAdapter(adapterViewPager);
     }
 
+    @Override
+    public String getScreenNameForAnalytics() {
+        return DETAIL_SCREEN_NAME;
+    }
 
 
     @Override
@@ -85,62 +105,134 @@ public class DetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    final Observer<ItemList> myObserver = new Observer<ItemList>() {
+    private final Observer<ItemList> firstObserver = new Observer<ItemList>() {
         @Override
         public void onChanged(@Nullable final ItemList list) {
-            items = list;
-            adapterViewPager.setList(items);
+            adapterViewPager.setFirstList(list);
+            adapterViewPager.notifyDataSetChanged();
+        }
+    };
+
+    private final Observer<ItemList> secondObserver = new Observer<ItemList>() {
+        @Override
+        public void onChanged(@Nullable final ItemList list) {
+            adapterViewPager.setSecondList(list);
+            adapterViewPager.notifyDataSetChanged();
+        }
+    };
+
+    private final Observer<ItemList> thirdObserver = new Observer<ItemList>() {
+        @Override
+        public void onChanged(@Nullable final ItemList list) {
+            adapterViewPager.setThirdList(list);
             adapterViewPager.notifyDataSetChanged();
         }
     };
 
 
+    @SuppressWarnings("CanBeFinal")
     public static class MyPagerAdapter extends FragmentStatePagerAdapter {
-        private static int NUM_ITEMS = 2;
-        private ItemList adapterList;
 
-        public MyPagerAdapter(FragmentManager fragmentManager) {
+        private static int NUM_ITEMS = 4;
+
+        private ItemList firstList;
+
+        private ItemList secondList;
+
+        private ItemList thirdList;
+
+
+        MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
-        public void setList(ItemList list){
-            adapterList = list;
+        void setFirstList(ItemList list){firstList = list;}
+
+        void setSecondList(ItemList list){
+            secondList = list;
         }
-        // Returns total number of pages
+
+        void setThirdList(ItemList list){
+            thirdList = list;
+        }
+
+
         @Override
         public int getCount() {
             return NUM_ITEMS;
         }
 
-        // Returns the fragment to display for that page
+
         @Override
         public Fragment getItem(int position) {
+
             switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    return DetailFragment.newInstance(item, type);
-                case 1: // Fragment # 0 - List of comics for characters and list of characters for comics
-                    return RecyclerViewFragment.newInstance(1, "Page # 2", adapterList);
+                case 0:
+                    return DetailFragment.newInstance(item);
+                case 1:
+                    return RecyclerViewFragment.newInstance(false, null, firstList);
+                case 2:
+                    return RecyclerViewFragment.newInstance(false, null, secondList);
+                case 3:
+                    return RecyclerViewFragment.newInstance(false, null, thirdList);
                 default:
                     return null;
             }
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             return POSITION_NONE;
         }
 
-        // Returns the page title for the top indicator
+
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    return "Details";
-                case 1: // Fragment # 0 - List of comics for characters and list of characters for comics
-                    if (type == isCharacter) return "Comics";
-                    else if (type == isComic) return "Characters";
+                case 0:
+
+                    return DETAIL_TITLE_DETAIL;
+                case 1:
+
+                    switch (type){
+                        case isCharacter:
+                            return DETAIL_TITLE_COMICS;
+                        case isComic:
+                        case isSeries:
+                        case isEvent:
+                            return DETAIL_TITLE_CHARACTERS;
+                        default:
+                            return null;
+                    }
+                case 2:
+
+                    switch (type){
+                        case isCharacter:
+                        case isComic:
+                            return DETAIL_TITLE_SERIES;
+                        case isSeries:
+                        case isEvent:
+                            return DETAIL_TITLE_COMICS;
+                        default:
+                            return null;
+                    }
+                case 3:
+
+                    switch (type){
+                        case isCharacter:
+                        case isComic:
+                        case isSeries:
+                            return DETAIL_TITLE_EVENTS;
+                        case isEvent:
+                            return DETAIL_TITLE_SERIES;
+                        default:
+                            return null;
+                    }
                 default:
+
                     return null;
+
+
             }
         }
 

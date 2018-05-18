@@ -4,26 +4,48 @@ import org.parceler.Parcel;
 
 import java.util.List;
 
-/**
- * Created by christosdemetriou on 04/05/2018.
- */
 
+
+@SuppressWarnings("WeakerAccess")
 @Parcel
 public class ItemList {
 
+
     public static class Type {
+
         public final static int isCharacter = 0;
         public final static int isComic = 1;
         public final static int isSeries = 2;
-        public final static int isStory = 3;
+        public final static int isEvent = 3;
+
     }
 
     List<Item> mylist;
 
-    public boolean isCharacter = false;
-    public boolean isComic = false;
-    public boolean isSeries = false;
-    public boolean isStory = false;
+    int type;
+
+
+    public ItemList() {}
+
+    public ItemList(List<Item> list, int t){
+
+        mylist = list;
+
+        switch (t){
+            case Type.isCharacter:
+                type = Type.isCharacter;
+                break;
+            case Type.isComic:
+                type = Type.isComic;
+                break;
+            case Type.isSeries:
+                type = Type.isSeries;
+                break;
+            case Type.isEvent:
+                type = Type.isEvent;
+                break;
+        }
+    }
 
     public List<Item> getList() {
         return mylist;
@@ -33,23 +55,12 @@ public class ItemList {
         this.mylist = list;
     }
 
-    public ItemList() {}
-
-    public ItemList(List<Item> list, int type){
-        mylist = list;
-        switch (type){
-            case Type.isCharacter:
-                isCharacter = true;
-                break;
-            case Type.isComic:
-                isComic = true;
-                break;
-            case Type.isSeries:
-                isSeries = true;
-                break;
-            case Type.isStory:
-                isStory = true;
-                break;
-        }
+    public int getType() {
+        return type;
     }
+
+    public void setType(@SuppressWarnings("SameParameterValue") int type) {
+        this.type = type;
+    }
+
 }

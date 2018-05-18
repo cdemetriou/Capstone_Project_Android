@@ -6,6 +6,17 @@ android {
     dataBinding {
         enabled = true
     }
+
+    signingConfigs {
+        release {
+            storeFile file("marvello_keystore")
+            storePassword 'RfCMz^@6fB!Z6Uff'
+            keyAlias 'release'
+            keyPassword 'RfCMz^@6fB!Z6Uff'
+        }
+    }
+
+
     defaultConfig {
         applicationId "com.udacity.capstone"
         minSdkVersion 21
@@ -25,6 +36,7 @@ android {
         release {
             crunchPngs false
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
@@ -39,7 +51,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
+    implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.google.firebase:firebase-core:11.8.0'
+    releaseImplementation 'com.google.firebase:firebase-crash:11.8.0'
+
     testImplementation 'junit:junit:4.12'
+
+    //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
@@ -63,18 +81,22 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.10'
     implementation 'com.google.code.gson:gson:2.8.2'
 
-
     implementation 'frankiesardo:icepick:3.2.0'
     annotationProcessor 'frankiesardo:icepick-processor:3.2.0'
-
-    implementation 'com.jakewharton.timber:timber:4.7.0'
 
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
     implementation("com.mikepenz:materialdrawer:6.0.7@aar") {
         transitive = true
     }
-}
 
+    implementation 'com.daimajia.easing:library:2.0@aar'
+    implementation 'com.daimajia.androidanimations:library:2.3@aar'
+
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+}
 
 
 apply plugin: 'com.google.gms.google-services'

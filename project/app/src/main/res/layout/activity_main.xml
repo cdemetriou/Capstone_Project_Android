@@ -26,6 +26,14 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" >
 
+        <TextView
+            android:text="@string/copyright"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:padding="10dp"/>
+
 
     </android.support.design.widget.NavigationView>
 

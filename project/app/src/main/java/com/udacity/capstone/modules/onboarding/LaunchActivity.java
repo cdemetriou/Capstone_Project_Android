@@ -6,15 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.udacity.capstone.R;
-import com.udacity.capstone.utils.Utils;
 
-/**
- * Created by christosdemetriou on 27/04/2018.
- */
+import static com.udacity.capstone.data.Constants.SPLASH_TIME;
+
 
 public class LaunchActivity extends AppCompatActivity {
 
-    private static final int SPLASH_TIME = 3000;
 
 
     @Override
@@ -28,7 +25,6 @@ public class LaunchActivity extends AppCompatActivity {
 
     private class BackgroundTask extends AsyncTask {
 
-        // Do any required loading in here
         @Override
         protected Object doInBackground(Object[] params) {
 
@@ -44,7 +40,6 @@ public class LaunchActivity extends AppCompatActivity {
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
 
-            // Here check if user is logged in
             startActivity(new Intent(LaunchActivity.this, OnboardingActivity.class));
             finish();
         }

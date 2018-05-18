@@ -12,65 +12,89 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
-/**
- * Created by christosdemetriou on 20/04/2018.
- */
+
 
 public interface MarvelService {
 
+    // Default lists
 
     @GET("characters")
-    Call<Response> getDefaultCharacters(@Nullable @Query("orderBy") String modified, @QueryMap Map<String, String> queryMap,
-                                        @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
-
+    Call<Response> getDefaultCharacters(@SuppressWarnings("SameParameterValue") @Nullable @Query("orderBy") String modified, @QueryMap Map<String, String> queryMap,
+                                        @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
     @GET("comics")
-    Call<Response> getDefaultComics(@Nullable @Query("orderBy") String modified, @QueryMap Map<String, String> queryMap,
-                                    @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
+    Call<Response> getDefaultComics(@SuppressWarnings("SameParameterValue") @Nullable @Query("orderBy") String modified, @QueryMap Map<String, String> queryMap,
+                                    @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
+    @GET("series")
+    Call<Response> getDefaultSeries(@SuppressWarnings("SameParameterValue") @Nullable @Query("orderBy") String modified, @QueryMap Map<String, String> queryMap,
+                                    @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
+    @GET("events")
+    Call<Response> getDefaultEvents(@SuppressWarnings("SameParameterValue") @Nullable @Query("orderBy") String modified, @QueryMap Map<String, String> queryMap,
+                                    @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
+
+
+    // Search by name/title
 
     @GET("characters")
     Call<Response> searchCharactersByName(@Nullable @Query("nameStartsWith") String nameStartsWith, @QueryMap Map<String, String> queryMap,
-                                        @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
-
+                                          @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
     @GET("comics")
     Call<Response> searchComicsByName(@Nullable @Query("titleStartsWith") String titleStartsWith, @QueryMap Map<String, String> queryMap,
-                                    @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
-
+                                      @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
     @GET("series")
     Call<Response> searchSeriesByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @QueryMap Map<String, String> queryMap,
-                                @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
+                                       @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
+    @GET("events")
+    Call<Response> searchEventsByName(@Nullable @Query("nameStartsWith") String nameStartsWith, @QueryMap Map<String, String> queryMap,
+                                      @Nullable @Query("offset") Integer offset, @SuppressWarnings("SameParameterValue") @Nullable @Query("limit") Integer limit);
 
-    @GET("stories")
-    Call<Response> searchEventsByTitle(@Nullable @Query("titleStartsWith") String titleStartsWith, @QueryMap Map<String, String> queryMap,
-                                @Nullable @Query("offset") Integer offset, @Nullable @Query("limit") Integer limit);
 
-    @GET("characters/{characterId}")
-    Call<Response> getCharacterById(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
+
+    // Get list by characterid
 
     @GET("characters/{characterId}/comics")
     Call<Response> getComicsByCharacterId(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
     @GET("characters/{characterId}/series")
-    Call<Response> getCharacterSeriesById(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
+    Call<Response> getSeriesByCharacterId(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
     @GET("characters/{characterId}/events")
-    Call<Response> getCharacterEventsById(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
+    Call<Response> getEventsByCharacterId(@Path("characterId") Integer characterId, @QueryMap Map<String, String> queryMap);
 
-    @GET("comics/{comicId}")
-    Call<Response> getComicById(@Path("comicId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
-    @GET("series/{seriesId}")
-    Call<Response> getSeriesById(@Path("seriesId") Integer comicId, @QueryMap Map<String, String> queryMap);
-
-    @GET("events/{eventId}")
-    Call<Response> getEventById(@Path("eventId") Integer comicId, @QueryMap Map<String, String> queryMap);
+    // Get list by comicid
 
     @GET("comics/{comicId}/characters")
     Call<Response> getCharactersByComicId(@Path("comicId") Integer comicId, @QueryMap Map<String, String> queryMap);
 
+    @GET("comics/{comicId}/series")
+    Call<Response> getSeriesByComicId(@Path("comicId") Integer comicId, @QueryMap Map<String, String> queryMap);
+
+    @GET("comics/{comicId}/events")
+    Call<Response> getEventsByComicId(@Path("comicId") Integer comicId, @QueryMap Map<String, String> queryMap);
+
+
+    // Get list by seriesid
+
     @GET("series/{seriesId}/characters")
-    Call<Response> getSeriesCharactersById(@Path("seriesId") Integer comicId, @QueryMap Map<String, String> queryMap);
+    Call<Response> getCharactersBySeriesId(@Path("seriesId") Integer seriesId, @QueryMap Map<String, String> queryMap);
+
+    @GET("series/{seriesId}/comics")
+    Call<Response> getComicsBySeriesId(@Path("seriesId") Integer comicId, @QueryMap Map<String, String> queryMap);
+
+    @GET("series/{seriesId}/events")
+    Call<Response> getEventsBySeriesId(@Path("seriesId") Integer comicId, @QueryMap Map<String, String> queryMap);
+
+
+    // Get list by eventid
 
     @GET("events/{eventId}/characters")
-    Call<Response> getEventCharactersById(@Path("eventId") Integer comicId, @QueryMap Map<String, String> queryMap);
+    Call<Response> getCharactersByEventId(@Path("eventId") Integer seriesId, @QueryMap Map<String, String> queryMap);
+
+    @GET("events/{eventId}/comics")
+    Call<Response> getComicsByEventId(@Path("eventId") Integer comicId, @QueryMap Map<String, String> queryMap);
+
+    @GET("events/{eventId}/series")
+    Call<Response> getSeriesByEventId(@Path("eventId") Integer comicId, @QueryMap Map<String, String> queryMap);
+
 
 }

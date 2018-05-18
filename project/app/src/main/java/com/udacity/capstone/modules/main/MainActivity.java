@@ -2,6 +2,7 @@ package com.udacity.capstone.modules.main;
 
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,52 +21,99 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.udacity.capstone.BaseActivity;
+import com.udacity.capstone.CapstoneApplication;
 import com.udacity.capstone.R;
+import com.udacity.capstone.firebase.FirebaseAnalyticsManager;
+import com.udacity.capstone.firebase.FirebaseDatabaseManager;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.databinding.ActivityMainBinding;
-import com.udacity.capstone.modules.RecyclerViewFragment;
+import com.udacity.capstone.modules.recyclerView.RecyclerViewFragment;
+import com.udacity.capstone.modules.settings.SettingsActivity;
+import com.udacity.capstone.widget.WidgetManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import icepick.State;
-import timber.log.Timber;
+import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity {
+import icepick.State;
+
+import static com.udacity.capstone.CapstoneApplication.getWidgetManager;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_CHARACTERS;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_COMICS;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_EVENTS;
+import static com.udacity.capstone.data.Constants.DETAIL_TITLE_SERIES;
+import static com.udacity.capstone.data.Constants.MAIN_SCREEN_NAME;
+import static com.udacity.capstone.data.Constants.TITLE_MY_TEAM;
+import static com.udacity.capstone.data.Constants.TITLE_SETTINGS;
+
+
+@SuppressWarnings("WeakerAccess")
+public class MainActivity extends BaseActivity implements FirebaseDatabaseManager.EventCallback {
 
     @State
     int navigationOption = R.id.nav_characters;
 
-    ActivityMainBinding binding;
-    MainViewModel viewModel;
-    ItemList characters;
-    ItemList comics;
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    @Inject
+    FirebaseAuth auth;
+    @Inject
+    FirebaseDatabaseManager databaseManager;
+    @Inject
+    FirebaseAnalyticsManager analyticsManager;
 
-    String searchTerm;
+    private ActivityMainBinding binding;
+
+    private MainViewModel viewModel;
+
+    private ItemList characters;
+    private ItemList comics;
+    private ItemList series;
+    private ItemList events;
+    private ItemList favorites;
+
+    private String searchTerm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CapstoneApplication.getApplicationComponent(this).inject(this);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
         setupActivity();
         viewModel = new MainViewModel(this);
 
         viewModel.getCharacterList().observe(this, myObserver);
         viewModel.getComicsList().observe(this, myObserver);
+        viewModel.getSeriesList().observe(this, myObserver);
+        viewModel.getEventsList().observe(this, myObserver);
+
+
+        databaseManager.setCallback(this);
+
+        if (auth.getCurrentUser().getUid() != null){
+            databaseManager.setUser();
+            analyticsManager.logSetUser();
+            databaseManager.getFavorites();
+        }
+    }
+
+    @Override
+    public String getScreenNameForAnalytics() {
+        return MAIN_SCREEN_NAME;
     }
 
     private void setupActivity() {
         setSupportActionBar(binding.appBarMain.toolbar);
+        getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout,
                 binding.appBarMain.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
-
+        FirebaseUser user = auth.getCurrentUser();
         TextView nameView = binding.navView.getHeaderView(0).findViewById(R.id.name);
         TextView emailView = binding.navView.getHeaderView(0).findViewById(R.id.email);
         nameView.setText(user != null ? user.getDisplayName() : null);
@@ -74,18 +122,37 @@ public class MainActivity extends BaseActivity {
         binding.navView.setNavigationItemSelectedListener(navigationListener);
         binding.appBarMain.searchView.setOnQueryTextListener(QueryTextListener);
         binding.appBarMain.searchView.setOnSearchViewListener(SearchViewListener);
+
+        favorites = new ItemList();
+        favorites.setType(ItemList.Type.isCharacter);
+        favorites.setList(new ArrayList<>());
     }
 
+    private final Observer<ItemList> myObserver = new Observer<ItemList>() {
 
-    final Observer<ItemList> myObserver = new Observer<ItemList>() {
         @Override
         public void onChanged(@Nullable final ItemList list) {
+
             if (searchTerm != null) {
                 displayItems(list);
                 return;
             }
-            if (list.isCharacter) characters = list;
-            else comics = list;
+
+            assert list != null;
+            switch (list.getType()) {
+                case ItemList.Type.isCharacter:
+                    characters = list;
+                    break;
+                case ItemList.Type.isComic:
+                    comics = list;
+                    break;
+                case ItemList.Type.isSeries:
+                    series = list;
+                    break;
+                case ItemList.Type.isEvent:
+                    events = list;
+                    break;
+            }
 
             if (navigationOption != -1) {
                 switch (navigationOption) {
@@ -95,6 +162,12 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_comics:
                         displayItems(comics);
                         break;
+                    case R.id.nav_series:
+                        displayItems(series);
+                        break;
+                    case R.id.nav_events:
+                        displayItems(events);
+                        break;
                 }
             }
             else displayItems(characters);
@@ -102,55 +175,120 @@ public class MainActivity extends BaseActivity {
     };
 
     private final NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
+
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             int id = item.getItemId();
+            navigationOption = id;
 
             switch (id){
+                case  R.id.nav_favorites:
+                    getSupportActionBar().setTitle(TITLE_MY_TEAM);
+                    displayItems(favorites);
+                    break;
                 case  R.id.nav_characters:
+                    getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
                     displayItems(characters);
                     break;
                 case R.id.nav_comics:
+                    getSupportActionBar().setTitle(DETAIL_TITLE_COMICS);
                     displayItems(comics);
+                    break;
+                case  R.id.nav_series:
+                    getSupportActionBar().setTitle(DETAIL_TITLE_SERIES);
+                    displayItems(series);
+                    break;
+                case R.id.nav_events:
+                    getSupportActionBar().setTitle(DETAIL_TITLE_EVENTS);
+                    displayItems(events);
+                    break;
+                case R.id.nav_settings:
+                    getSupportActionBar().setTitle(TITLE_SETTINGS);
+                    goToSettings();
                     break;
             }
 
-            navigationOption = id;
             binding.drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
     };
 
+
     private final MaterialSearchView.OnQueryTextListener QueryTextListener = new MaterialSearchView.OnQueryTextListener() {
+
         private int count = 0;
+
         @Override
         public boolean onQueryTextSubmit(String query) {
             switch (navigationOption){
+                case  R.id.nav_favorites:
+
+                    searchTerm = query;
+                    displayItems(null);
+                    databaseManager.searchFavoritesByName(searchTerm);
+                    break;
+
                 case  R.id.nav_characters:
-                    //Do some magic
+
                     searchTerm = query;
                     viewModel.getCharacterList().observe(MainActivity.this, myObserver);
                     displayItems(null);
                     viewModel.searchCharacters(query);
+
+                    if (count < 1) {
+                        count++;
+                        this.onQueryTextSubmit(query);
+                        return true;
+                    }
                     break;
 
                 case R.id.nav_comics:
-                    //Do some magic
+
                     searchTerm = query;
                     viewModel.getComicsList().observe(MainActivity.this, myObserver);
                     displayItems(null);
                     viewModel.searchComics(query);
+
+                    if (count < 1) {
+                        count++;
+                        this.onQueryTextSubmit(query);
+                        return true;
+                    }
+                    break;
+
+                case R.id.nav_series:
+
+                    searchTerm = query;
+                    viewModel.getSeriesList().observe(MainActivity.this, myObserver);
+                    displayItems(null);
+                    viewModel.searchSeries(query);
+
+                    if (count < 1) {
+                        count++;
+                        this.onQueryTextSubmit(query);
+                        return true;
+                    }
+                    break;
+
+                case R.id.nav_events:
+
+                    searchTerm = query;
+                    viewModel.getEventsList().observe(MainActivity.this, myObserver);
+                    displayItems(null);
+                    viewModel.searchEvents(query);
+
+                    if (count < 1) {
+                        count++;
+                        this.onQueryTextSubmit(query);
+                        return true;
+                    }
                     break;
             }
 
-            if (count < 1) {
-                count++;
-                this.onQueryTextSubmit(query);
-                return true;
-            }
             count = 0;
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            assert imm != null;
             imm.hideSoftInputFromWindow(binding.getRoot().getWindowToken(), 0);
 
             return true;
@@ -166,23 +304,28 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onSearchViewShown() {
         }
-
         @Override
         public void onSearchViewClosed() {
             searchTerm = null;
         }
     };
 
+    private void displayItems(ItemList itemList) {
 
-    public void displayItems(ItemList list){
+        if (itemList != null) {
+            List<Item> uniqueList = Item.unique(itemList.getList());
+            itemList.setList(uniqueList);
+        }
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment charactersFragment = RecyclerViewFragment.newInstance(0, null, list);
+        Fragment charactersFragment = RecyclerViewFragment.newInstance(navigationOption == R.id.nav_favorites, searchTerm, itemList);
         transaction.replace(R.id.frame_layout, charactersFragment);
         transaction.commit();
     }
 
     @Override
     public void onBackPressed() {
+
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
@@ -192,11 +335,62 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         binding.appBarMain.searchView.setMenuItem(item);
-
-
         return true;
+    }
+
+
+
+    @Override
+    public void added(Item item) {
+
+        favorites.getList().add(item);
+        updateWidget();
+        displayItems(characters);
+    }
+
+    @Override
+    public void removed(Item item) {
+
+        if (item != null) {
+            for (Item it : favorites.getList()) {
+                if (it.getId().equals(item.getId())) {
+                    favorites.getList().remove(it);
+                    updateWidget();
+                    break;
+                }
+            }
+
+            if (navigationOption != -1) {
+                switch (navigationOption) {
+                    case R.id.nav_characters:
+                        displayItems(characters);
+                        break;
+                    case R.id.nav_favorites:
+                        displayItems(favorites);
+                        break;
+                }
+            }
+            else displayItems(characters);
+        }
+    }
+
+    @Override
+    public void searchResult(ItemList list) {
+        displayItems(list);
+    }
+
+    private void goToSettings() {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+
+    private void updateWidget() {
+
+        WidgetManager widgetManager = getWidgetManager();
+        widgetManager.setRecipe(favorites);
     }
 }

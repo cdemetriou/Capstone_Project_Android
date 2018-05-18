@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
-                android:text="Previous" />
+                android:text="@string/previous_button" />
 
             <Button
                 android:id="@+id/next"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
-                android:text="Next" />
+                android:text="@string/next_button" />
         </FrameLayout>
 
         <LinearLayout
@@ -62,25 +62,36 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/pager_item_unselected" />
+                android:background="@drawable/pager_item_unselected"
+                android:contentDescription="@string/content_description_onboarding_page_indicators" />
 
             <ImageView
                 android:id="@+id/page2_indicator"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/pager_item_unselected" />
+                android:background="@drawable/pager_item_unselected"
+                android:contentDescription="@string/content_description_onboarding_page_indicators" />
 
             <ImageView
                 android:id="@+id/page3_indicator"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
-                android:background="@drawable/pager_item_unselected" />
+                android:background="@drawable/pager_item_unselected"
+                android:contentDescription="@string/content_description_onboarding_page_indicators" />
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/skip"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/skip_button"/>
 
     </android.support.constraint.ConstraintLayout>
 

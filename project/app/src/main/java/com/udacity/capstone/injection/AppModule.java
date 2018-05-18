@@ -1,20 +1,20 @@
 package com.udacity.capstone.injection;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by christosdemetriou on 18/04/2018.
- */
 
+@SuppressWarnings("CanBeFinal")
 @Module
 public class AppModule {
 
-    Application mApplication;
+    private Application mApplication;
 
     public AppModule(Application application) {
         mApplication = application;
@@ -25,4 +25,11 @@ public class AppModule {
     Application providesApplication() {
         return mApplication;
     }
+
+    @Provides
+    @Singleton
+    SharedPreferences providesSharedPreferences(Application application) {
+        return PreferenceManager.getDefaultSharedPreferences(application);
+    }
+
 }

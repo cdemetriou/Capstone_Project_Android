@@ -1,35 +1,23 @@
 package com.udacity.capstone.data.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import org.parceler.Parcel;
-
 import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by christosdemetriou on 20/04/2018.
- */
 
 
+
+@SuppressWarnings("unused")
 public class Data {
 
-    @SerializedName("offset")
-    @Expose
+
     private Integer offset;
-    @SerializedName("limit")
-    @Expose
+
     private Integer limit;
-    @SerializedName("total")
-    @Expose
+
     private Integer total;
-    @SerializedName("count")
-    @Expose
+
     private Integer count;
-    @SerializedName("results")
-    @Expose
+
     private ArrayList<Item> results = null;
+
 
     public Integer getOffset() {
         return offset;

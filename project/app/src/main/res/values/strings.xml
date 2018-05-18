@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">capstone</string>
+    <string name="app_name">Marvello</string>
     <string name="title_activity_main">MainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -25,5 +25,61 @@
         rhoncus sit amet rutrum in, tempor in eros. Donec consectetur felis a odio sodales,
         nec pharetra justo gravida.In consectetur nisl in sagittis egestas. Phasellus ornare
         sem sit amet lectus elementum vulputate at vitae urna</string>
+
+
+    <string name="crash_tracker_description">Google Firebase Crashlytics is used to collect crash reports which help us fix any issues more quickly.</string>
+    <string name="analytics_description">Google Firebase Analytics is used to help us build a picture of how the app is used to inform updates and new developments.</string>
+    <string name="crash_tracker_title_text">Crash tracker</string>
+    <string name="analytics_tracker_title_text">Analytics tracker</string>
+    <string name="log_out_button_text">Log out</string>
+
+    <string name="pref_key_crashlytics_enabled">send_crashes</string>
+    <string name="pref_key_analytics_enabled">send_analytics</string>
+    <string name="appwidget_text">Marvello Team</string>
+    <string name="add_widget">Add widget</string>
+
+    <string name="onboarding_title_1">Welcome To Marvello</string>
+    <string name="onboarding_title_2">Search Everything</string>
+    <string name="onboarding_title_3">Build The New Avengers</string>
+
+    <string name="onboarding_desc_1">Welcome to the gateway to the Marvel Universe. Enjoy extensive content for Marvel related content from heroes to comics and specific series.</string>
+    <string name="onboarding_desc_2">Looking for a specific hero that has suddenly surfaced? You can search for any character, comic, series or event by name.</string>
+    <string name="onboarding_desc_3">The Avengers team needs your assistance. Build your dream team by selecting your favorite heroes!!</string>
+    <string name="error_login_title">Error logging in</string>
+    <string name="error_login_message">Try again later.</string>
+    <string name="error_login_action">OK</string>
+    <string name="name">Name</string>
+    <string name="title">Title</string>
+    <string name="content_description_splash_screen">splash screen</string>
+    <string name="previous_button">Previous</string>
+    <string name="next_button">Next</string>
+    <string name="content_description_onboarding_page_indicators">onboarding page indicators</string>
+    <string name="skip_button">Skip</string>
+    <string name="content_description_item_image">item image</string>
+    <string name="content_description_list_background_image">list background image</string>
+    <string name="content_description_onboarding_background_image">onboarding background image</string>
+    <string name="content_description_item_in_list_background_image">item in list background image</string>
+    <string name="content_description_navigation_header_image">navigation header image</string>
+    <string name="copyright">© 2018 MARVEL</string>
+    <string name="my_team">My Team</string>
+    <string name="search_by">Search by</string>
+    <string name="characters">Characters</string>
+    <string name="comics">Comics</string>
+    <string name="series">Series</string>
+    <string name="events">Events</string>
+    <string name="settings">Settings</string>
+    <string name="search">Search</string>
+
+    <string-array name="onboarding_titles">
+        <item>@string/onboarding_title_1</item>
+        <item>@string/onboarding_title_2</item>
+        <item>@string/onboarding_title_3</item>
+    </string-array>
+
+    <string-array name="onboarding_desc">
+        <item>@string/onboarding_desc_1</item>
+        <item>@string/onboarding_desc_2</item>
+        <item>@string/onboarding_desc_3</item>
+    </string-array>
 
 </resources>

@@ -2,6 +2,7 @@ package com.udacity.capstone.modules.detail;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,40 +12,39 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.udacity.capstone.BaseFragment;
+import com.udacity.capstone.CapstoneApplication;
 import com.udacity.capstone.R;
+import com.udacity.capstone.firebase.FirebaseDatabaseManager;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.databinding.FragmentItemDetailsBinding;
 
 import org.parceler.Parcels;
 
-import static com.udacity.capstone.data.model.ItemList.Type.isCharacter;
+import javax.inject.Inject;
 
-/**
- * Created by christosdemetriou on 04/05/2018.
- */
+import static com.udacity.capstone.data.Constants.EXTRAS_ITEM;
+import static com.udacity.capstone.data.Constants.ITEM_DETAIL_SCREEN_NAME;
 
 
 public class DetailFragment extends BaseFragment {
 
-    FragmentItemDetailsBinding binding;
-    private String title;
-    private int page;
+    @Inject
+    FirebaseDatabaseManager databaseManager;
+
     private Item item = new Item();
-    private int type;
 
-    public DetailFragment() {
-    }
 
-    public static Fragment newInstance() {
+    public DetailFragment() {}
+
+    private static Fragment newInstance() {
         return new DetailFragment();
     }
 
 
-    public static Fragment newInstance(Item item, int type) {
+    public static Fragment newInstance(Item item) {
         Fragment fragmentFirst = DetailFragment.newInstance();
         Bundle args = new Bundle();
-        args.putParcelable("item", Parcels.wrap(item));
-        args.putInt("type", type);
+        args.putParcelable(EXTRAS_ITEM, Parcels.wrap(item));
         fragmentFirst.setArguments(args);
         return fragmentFirst;
     }
@@ -54,19 +54,19 @@ public class DetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            item = Parcels.unwrap(getArguments().getParcelable("item"));
-            type = getArguments().getInt("type");
+            item = Parcels.unwrap(getArguments().getParcelable(EXTRAS_ITEM));
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_item_details, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (type != isCharacter) binding.button.setVisibility(View.GONE);
+        CapstoneApplication.getApplicationComponent(getActivity()).inject(this);
+
+        FragmentItemDetailsBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_item_details, container, false);
 
         if (item.getThumbnail() != null) {
-            String image = item.getThumbnail().getPath() + "." + item.getThumbnail().getExtension();
+            String image = String.format("%s.%s", item.getThumbnail().getPath(), item.getThumbnail().getExtension());
 
             Glide.with(this)
                     .load(image)
@@ -77,9 +77,13 @@ public class DetailFragment extends BaseFragment {
             binding.description.setText(item.getDescription() != null ? item.getDescription() : item.getVariantDescription());
         }
 
-
-
         return binding.getRoot();
+
+    }
+
+    @Override
+    public String getScreenNameForAnalytics() {
+        return ITEM_DETAIL_SCREEN_NAME;
     }
 
 }

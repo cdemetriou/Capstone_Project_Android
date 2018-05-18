@@ -9,58 +9,84 @@ import com.udacity.capstone.data.remote.Repository;
 
 import javax.inject.Inject;
 
-/**
- * Created by christosdemetriou on 04/05/2018.
- */
 
+@SuppressWarnings("WeakerAccess")
 public class MainViewModel {
 
     @Inject
     Repository repository;
     
-    MutableLiveData<ItemList> characterList;
-    MutableLiveData<ItemList> comicsList;
-
-    //private MutableLiveData<ItemList> searchList;
-
-
+    private MutableLiveData<ItemList> characterList;
+    private MutableLiveData<ItemList> comicsList;
+    private MutableLiveData<ItemList> seriesList;
+    private MutableLiveData<ItemList> eventsList;
 
 
-    public MainViewModel(Context context) {
+    MainViewModel(Context context) {
         CapstoneApplication.getApplicationComponent(context).inject(this);
 
         getDefaultCharacters();
         getDefaultComics();
+        getDefaultSeries();
+        getDefaultEvents();
     }
 
-    public void getDefaultCharacters(){
-        characterList = repository.getDefaultCharacters(0, 10);
+    private void getDefaultCharacters(){
+        characterList = repository.getDefaultCharacters(0);
     }
-    public void getDefaultComics(){
-        comicsList = repository.getDefaultComics(0, 10);
+    private void getDefaultComics(){
+        comicsList = repository.getDefaultComics(0);
     }
-
-    public void searchCharacters(String nameStartWith){
-        characterList = repository.searchCharactersByName(nameStartWith, 0, 10);
+    private void getDefaultSeries(){
+        seriesList = repository.getDefaultSeries(0);
     }
-
-    public void searchComics(String titleStartsWith) {
-        comicsList = repository.searchComicsByName(titleStartsWith,0,10);
+    private void getDefaultEvents(){
+        eventsList = repository.getDefaultEvents(0);
     }
 
+    void searchCharacters(String nameStartWith){
+        characterList = repository.searchCharactersByName(nameStartWith, 0);
+    }
 
-    public MutableLiveData<ItemList> getCharacterList() {
+    void searchComics(String titleStartsWith) {
+        comicsList = repository.searchComicsByName(titleStartsWith,0);
+    }
+
+    void searchSeries(String titleStartsWith){
+        seriesList = repository.searchSeriesByName(titleStartsWith, 0);
+    }
+
+    void searchEvents(String titleStartsWith) {
+        eventsList = repository.searchEventsByName(titleStartsWith,0);
+    }
+
+
+    MutableLiveData<ItemList> getCharacterList() {
         if (characterList == null) {
             characterList = new MutableLiveData<>();
         }
         return characterList;
     }
 
-    public MutableLiveData<ItemList> getComicsList() {
+    MutableLiveData<ItemList> getComicsList() {
         if (comicsList == null) {
             comicsList = new MutableLiveData<>();
         }
         return comicsList;
+    }
+
+    MutableLiveData<ItemList> getSeriesList() {
+        if (seriesList == null) {
+            seriesList = new MutableLiveData<>();
+        }
+        return seriesList;
+    }
+
+    MutableLiveData<ItemList> getEventsList() {
+        if (eventsList == null) {
+            eventsList = new MutableLiveData<>();
+        }
+        return eventsList;
     }
 
 }
