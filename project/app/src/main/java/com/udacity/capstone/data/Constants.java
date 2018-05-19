@@ -30,24 +30,10 @@ public class Constants {
     public static final String EXTRAS_SEARCH_TERM = "search";
     public static final String EXTRAS_LIST = "list";
 
-    public static final String DETAIL_TITLE_CHARACTER = "Character";
-    public static final String DETAIL_TITLE_COMIC = "Comic";
-    public static final String DETAIL_TITLE_SERIES = "Series";
-    public static final String DETAIL_TITLE_EVENT = "Event";
-    public static final String DETAIL_TITLE_CHARACTERS = "Characters";
-    public static final String DETAIL_TITLE_COMICS = "Comics";
-    public static final String DETAIL_TITLE_EVENTS = "Events";
-    public static final String DETAIL_TITLE_DETAIL = "Details";
-
 
     public static final String PREFERENCES_ONBOARDING = "onboarding_shown";
     public static final String PREFERENCES_EXPLANATION= "explanation_shown";
     public static final String ARG_SECTION_NUMBER = "section_number";
 
-    public static final String ONBOARDING_FINISH = "Finish";
-    public static final String ONBOARDING_NEXT = "Next";
-
-    public static final String TITLE_MY_TEAM = "My Team";
-    public static final String TITLE_SETTINGS = "Settings";
 
 }

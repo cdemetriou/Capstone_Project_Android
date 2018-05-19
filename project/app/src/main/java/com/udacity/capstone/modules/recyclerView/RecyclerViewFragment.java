@@ -55,7 +55,6 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
     @Inject
     FirebaseDatabaseManager databaseManager;
 
-    public RecyclerViewFragment() {}
 
     private static Fragment newInstance() {
         return new RecyclerViewFragment();

@@ -1,11 +1,14 @@
 package com.udacity.capstone.modules.detail;
 
 import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -24,14 +27,7 @@ import org.parceler.Parcels;
 
 
 import static com.udacity.capstone.data.Constants.DETAIL_SCREEN_NAME;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_CHARACTER;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_CHARACTERS;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_COMIC;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_COMICS;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_DETAIL;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_EVENT;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_EVENTS;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_SERIES;
+
 import static com.udacity.capstone.data.Constants.EXTRAS_ITEM;
 import static com.udacity.capstone.data.Constants.EXTRAS_TYPE;
 import static com.udacity.capstone.data.model.ItemList.Type.isCharacter;
@@ -48,6 +44,8 @@ public class DetailActivity extends BaseActivity {
 
     private static int type;
 
+    private static Context context;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class DetailActivity extends BaseActivity {
 
         ActivityCharacterDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_character_detail);
 
-
+        context = this;
         setSupportActionBar(binding.toolbar);
 
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -75,16 +73,16 @@ public class DetailActivity extends BaseActivity {
 
         switch (type){
             case isCharacter:
-                getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTER);
+                getSupportActionBar().setTitle(R.string.character);
                 break;
             case isComic:
-                getSupportActionBar().setTitle(DETAIL_TITLE_COMIC);
+                getSupportActionBar().setTitle(R.string.comic);
                 break;
             case isSeries:
-                getSupportActionBar().setTitle(DETAIL_TITLE_SERIES);
+                getSupportActionBar().setTitle(R.string.series);
                 break;
             case isEvent:
-                getSupportActionBar().setTitle(DETAIL_TITLE_EVENT);
+                getSupportActionBar().setTitle(R.string.event);
                 break;
         }
 
@@ -199,16 +197,16 @@ public class DetailActivity extends BaseActivity {
             switch (position) {
                 case 0:
 
-                    return DETAIL_TITLE_DETAIL;
+                    return context.getResources().getString(R.string.details);
                 case 1:
 
                     switch (type){
                         case isCharacter:
-                            return DETAIL_TITLE_COMICS;
+                            return context.getResources().getString(R.string.comics);
                         case isComic:
                         case isSeries:
                         case isEvent:
-                            return DETAIL_TITLE_CHARACTERS;
+                            return context.getResources().getString(R.string.characters);
                         default:
                             return null;
                     }
@@ -217,10 +215,10 @@ public class DetailActivity extends BaseActivity {
                     switch (type){
                         case isCharacter:
                         case isComic:
-                            return DETAIL_TITLE_SERIES;
+                            return context.getResources().getString(R.string.series);
                         case isSeries:
                         case isEvent:
-                            return DETAIL_TITLE_COMICS;
+                            return context.getResources().getString(R.string.comics);
                         default:
                             return null;
                     }
@@ -230,9 +228,9 @@ public class DetailActivity extends BaseActivity {
                         case isCharacter:
                         case isComic:
                         case isSeries:
-                            return DETAIL_TITLE_EVENTS;
+                            return context.getResources().getString(R.string.events);
                         case isEvent:
-                            return DETAIL_TITLE_SERIES;
+                            return context.getResources().getString(R.string.series);
                         default:
                             return null;
                     }

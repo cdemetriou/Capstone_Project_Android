@@ -38,7 +38,8 @@ public class SettingsActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
 
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.settings);
 
         seUpSharedPreferences();
         binding.logoutButton.setOnClickListener(logOutListener);

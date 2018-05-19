@@ -73,6 +73,12 @@
     <string name="content_description_explanation_background">explanation background</string>
     <string name="content_description_add_or_remove_item_button">add or remove item button</string>
     <string name="fullstop">.</string>
+    <string name="finish">Finish</string>
+    <string name="next">Next</string>
+    <string name="character">Character</string>
+    <string name="comic">Comic</string>
+    <string name="event">Event</string>
+    <string name="details">Details</string>
 
     <string-array name="onboarding_titles">
         <item>@string/onboarding_title_1</item>

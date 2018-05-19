@@ -33,9 +33,6 @@ public class DetailFragment extends BaseFragment {
 
     private Item item = new Item();
 
-
-    public DetailFragment() {}
-
     private static Fragment newInstance() {
         return new DetailFragment();
     }

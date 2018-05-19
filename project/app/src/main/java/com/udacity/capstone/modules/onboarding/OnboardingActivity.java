@@ -30,8 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.udacity.capstone.data.Constants.ARG_SECTION_NUMBER;
-import static com.udacity.capstone.data.Constants.ONBOARDING_FINISH;
-import static com.udacity.capstone.data.Constants.ONBOARDING_NEXT;
 import static com.udacity.capstone.data.Constants.PREFERENCES_ONBOARDING;
 
 
@@ -99,7 +97,7 @@ public class OnboardingActivity extends AppCompatActivity {
             page = position;
             updateIndicators(page);
             binding.previous.setVisibility(page == 0 ? View.GONE : View.VISIBLE);
-            binding.next.setText(page == 2 ? ONBOARDING_FINISH : ONBOARDING_NEXT);
+            binding.next.setText(page == 2 ? getString(R.string.finish) : getString(R.string.next));
         }
 
         @Override

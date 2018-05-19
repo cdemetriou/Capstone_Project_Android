@@ -40,13 +40,8 @@ import javax.inject.Inject;
 import icepick.State;
 
 import static com.udacity.capstone.CapstoneApplication.getWidgetManager;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_CHARACTERS;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_COMICS;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_EVENTS;
-import static com.udacity.capstone.data.Constants.DETAIL_TITLE_SERIES;
+
 import static com.udacity.capstone.data.Constants.MAIN_SCREEN_NAME;
-import static com.udacity.capstone.data.Constants.TITLE_MY_TEAM;
-import static com.udacity.capstone.data.Constants.TITLE_SETTINGS;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -118,7 +113,7 @@ public class MainActivity extends BaseActivity implements FirebaseDatabaseManage
 
     private void setupActivity() {
         setSupportActionBar(binding.appBarMain.toolbar);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.characters);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout,
                 binding.appBarMain.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -196,27 +191,27 @@ public class MainActivity extends BaseActivity implements FirebaseDatabaseManage
 
             switch (id){
                 case  R.id.nav_favorites:
-                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(TITLE_MY_TEAM);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.my_team);
                     displayItems(favorites);
                     break;
                 case  R.id.nav_characters:
-                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.characters);
                     displayItems(characters);
                     break;
                 case R.id.nav_comics:
-                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_COMICS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.comics);
                     displayItems(comics);
                     break;
                 case  R.id.nav_series:
-                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_SERIES);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.series);
                     displayItems(series);
                     break;
                 case R.id.nav_events:
-                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_EVENTS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.events);
                     displayItems(events);
                     break;
                 case R.id.nav_settings:
-                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(TITLE_SETTINGS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.settings);
                     goToSettings();
                     break;
             }

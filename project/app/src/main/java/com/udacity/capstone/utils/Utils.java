@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class Utils {
 
-
+    Utils(){}
 
     public static Map<String, String> getQueryMap() {
         long timeStamp = System.currentTimeMillis();
