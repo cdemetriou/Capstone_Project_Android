@@ -128,7 +128,6 @@ public class RecyclerViewFragment extends BaseFragment implements ItemAdapter.On
         intent.putExtra(EXTRAS_TYPE, list.getType());
 
         startActivity(intent);
-
     }
 
     @Override

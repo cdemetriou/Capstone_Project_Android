@@ -135,10 +135,6 @@ public class OnboardingActivity extends AppCompatActivity {
 
 
 
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     @SuppressWarnings("CanBeFinal")
     public static class PlaceholderFragment extends Fragment {
 

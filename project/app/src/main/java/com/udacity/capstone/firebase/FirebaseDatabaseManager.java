@@ -131,7 +131,8 @@ public class FirebaseDatabaseManager implements DatabaseInterface {
                         item = singleSnapshot.getValue(Item.class);
                         singleSnapshot.getRef().removeValue();
                     }
-                    callback.removed(item);
+
+                    if (callback != null) callback.removed(item);
                 }
             }
 
@@ -163,7 +164,7 @@ public class FirebaseDatabaseManager implements DatabaseInterface {
                 }
                 itemList.setList(list);
 
-                callback.searchResult(itemList);
+                if (callback != null) callback.searchResult(itemList);
             }
 
             @Override
@@ -189,7 +190,7 @@ public class FirebaseDatabaseManager implements DatabaseInterface {
             Item item = dataSnapshot.getValue(Item.class);
             assert item != null;
             favoriteIds.add(item.getId());
-            callback.added(item);
+            if (callback != null) callback.added(item);
 
             analyticsManager.logAddFavoriteSuccessEvent(item.getId().toString(), item.getName());
         }
@@ -200,7 +201,7 @@ public class FirebaseDatabaseManager implements DatabaseInterface {
             Item item = dataSnapshot.getValue(Item.class);
             assert item != null;
             favoriteIds.remove(item.getId());
-            callback.removed(item);
+            if (callback != null) callback.removed(item);
 
             analyticsManager.logRemoveFavoriteSuccessEvent(item.getId().toString(), item.getName());
         }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -120,7 +121,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
 
                 if (item.getThumbnail() != null) {
-                    String image = item.getThumbnail().getPath() + "." + item.getThumbnail().getExtension();
+                    String image = item.getThumbnail().getPath() + holder.rootView.getResources().getString(R.string.fullstop) + item.getThumbnail().getExtension();
 
                     Glide.with(holder.image.getContext())
                             .load(image)
@@ -195,7 +196,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             sample_button = itemView.findViewById(R.id.button_sample);
         }
 
-        public void bind(Item item, ItemAdapter.OnItemClickListener listener) {
+        public void bind(Item item, OnItemClickListener listener) {
             rootView.setOnClickListener(v -> listener.onItemClick(item));
             explanationCardView.setOnClickListener(v -> listener.onItemClick(item));
 
@@ -233,13 +234,18 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
             }
 
-            button.setOnClickListener(v -> {
+            button.setOnClickListener((View v) -> {
                 explanationCardView.setVisibility(View.GONE);
-                if (databaseManager.favoriteIds.contains(item.getId()))
+                if (databaseManager.favoriteIds.contains(item.getId())) {
                     listener.onRemoveClick(item);
-                else
+                    button.setVisibility(View.VISIBLE);
+                    button.setImageResource(android.R.drawable.ic_input_add);
+                    button.setBackgroundTintList(button.getContext().getResources().getColorStateList(R.color.accent));
+                }
+                else {
                     listener.onAddClick(item);
-
+                    button.setVisibility(View.GONE);
+                }
             });
         }
     }

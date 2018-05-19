@@ -92,11 +92,23 @@ public class MainActivity extends BaseActivity implements FirebaseDatabaseManage
 
         databaseManager.setCallback(this);
 
-        if (auth.getCurrentUser().getUid() != null){
+        if (auth.getCurrentUser() != null){
             databaseManager.setUser();
             analyticsManager.logSetUser();
             databaseManager.getFavorites();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseManager.setCallback(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        databaseManager.setCallback(null);
     }
 
     @Override
@@ -106,7 +118,7 @@ public class MainActivity extends BaseActivity implements FirebaseDatabaseManage
 
     private void setupActivity() {
         setSupportActionBar(binding.appBarMain.toolbar);
-        getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout,
                 binding.appBarMain.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -184,27 +196,27 @@ public class MainActivity extends BaseActivity implements FirebaseDatabaseManage
 
             switch (id){
                 case  R.id.nav_favorites:
-                    getSupportActionBar().setTitle(TITLE_MY_TEAM);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(TITLE_MY_TEAM);
                     displayItems(favorites);
                     break;
                 case  R.id.nav_characters:
-                    getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_CHARACTERS);
                     displayItems(characters);
                     break;
                 case R.id.nav_comics:
-                    getSupportActionBar().setTitle(DETAIL_TITLE_COMICS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_COMICS);
                     displayItems(comics);
                     break;
                 case  R.id.nav_series:
-                    getSupportActionBar().setTitle(DETAIL_TITLE_SERIES);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_SERIES);
                     displayItems(series);
                     break;
                 case R.id.nav_events:
-                    getSupportActionBar().setTitle(DETAIL_TITLE_EVENTS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(DETAIL_TITLE_EVENTS);
                     displayItems(events);
                     break;
                 case R.id.nav_settings:
-                    getSupportActionBar().setTitle(TITLE_SETTINGS);
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(TITLE_SETTINGS);
                     goToSettings();
                     break;
             }
@@ -346,7 +358,6 @@ public class MainActivity extends BaseActivity implements FirebaseDatabaseManage
 
     @Override
     public void added(Item item) {
-
         favorites.getList().add(item);
         updateWidget();
         displayItems(characters);

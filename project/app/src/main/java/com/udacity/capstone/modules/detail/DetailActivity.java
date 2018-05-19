@@ -1,6 +1,7 @@
 package com.udacity.capstone.modules.detail;
 
 import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.udacity.capstone.R;
 import com.udacity.capstone.data.model.Item;
 import com.udacity.capstone.data.model.ItemList;
 import com.udacity.capstone.databinding.ActivityCharacterDetailBinding;
+import com.udacity.capstone.modules.main.MainActivity;
 import com.udacity.capstone.modules.recyclerView.RecyclerViewFragment;
 
 import org.parceler.Parcels;
@@ -55,8 +57,10 @@ public class DetailActivity extends BaseActivity {
 
         ActivityCharacterDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_character_detail);
 
+
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().getExtras() != null) {
             item = Parcels.unwrap(getIntent().getExtras().getParcelable(EXTRAS_ITEM));
@@ -129,6 +133,10 @@ public class DetailActivity extends BaseActivity {
         }
     };
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
 
     @SuppressWarnings("CanBeFinal")
     public static class MyPagerAdapter extends FragmentStatePagerAdapter {

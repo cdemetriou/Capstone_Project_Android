@@ -51,7 +51,8 @@
                    android:tint="@color/colorPrimaryDark"
                    android:layout_gravity="top|end"
                    android:layout_marginTop="8dp"
-                   android:layout_marginEnd="8dp"/>
+                   android:layout_marginEnd="8dp"
+                   android:contentDescription="@string/content_description_add_or_remove_item_button"/>
 
            </FrameLayout>
 
@@ -66,7 +67,8 @@
                    android:layout_width="match_parent"
                    android:layout_height="match_parent"
                    android:alpha="0.7"
-                   android:background="@color/md_black_1000"/>
+                   android:background="@color/md_black_1000"
+                   android:contentDescription="@string/content_description_explanation_background" />
 
                <TextView
                    android:layout_width="match_parent"
@@ -74,7 +76,7 @@
                    android:gravity="center"
                    android:textColor="@color/md_white_1000"
                    android:padding="50dp"
-                   android:text="Long click a character to be able to remove from your team."/>
+                   android:text="@string/explanation_text"/>
 
                <android.support.design.widget.FloatingActionButton
                    android:id="@+id/button_sample"
